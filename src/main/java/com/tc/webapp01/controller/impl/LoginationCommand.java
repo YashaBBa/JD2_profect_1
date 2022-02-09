@@ -39,7 +39,7 @@ public class LoginationCommand implements Command {
 
         try {
             role = userService.authorisation(login, passwrod);
-            userID = userService.getUserID(login, login);
+            userID = userService.getUserID(login, passwrod);
 
             HttpSession session = request.getSession();
             if (null != role) {

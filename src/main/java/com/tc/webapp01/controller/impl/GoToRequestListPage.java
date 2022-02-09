@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GoToRequestListPage implements Command {
+
+    public static final String REQUEST_LIST = "requestList";
+    public static final String WEB_INF_JSP_REQUESTS_LIST_PAGE_JSP = "/WEB-INF/jsp/requestsListPage.jsp";
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServiceFactory serviceFactory = new ServiceFactory();
@@ -25,7 +29,7 @@ public class GoToRequestListPage implements Command {
         try {
             List<Request> requestList = adminService.showSpecialistsList();
 
-            request.setAttribute("requestList", requestList);
+            request.setAttribute(REQUEST_LIST, requestList);
 
 
         } catch (SQLException e) {
@@ -33,7 +37,7 @@ public class GoToRequestListPage implements Command {
         }
 
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/requestsListPage.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher(WEB_INF_JSP_REQUESTS_LIST_PAGE_JSP);
         dispatcher.forward(request, response);
 
 

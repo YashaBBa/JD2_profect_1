@@ -15,10 +15,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAdminDAO implements AdminDAO {
+
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_REQUEST = "SELECT * FROM applicationssystem.request;";
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_APPLICANTS = "SELECT * FROM applicationssystem.applicants;";
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_SPECIALTY = "SELECT * FROM applicationssystem.specialty;";
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_SPECIALTY1 = "SELECT * FROM applicationssystem.specialty;";
+    public static final String SPECIALTY = "specialty";
+    public static final String IDSPECIALTY = "idspecialty";
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_SUBJECTS = "SELECT * FROM applicationssystem.subjects;";
+    public static final String APPLICANTS_APPLICANT_ID = "applicants_applicant_id";
+    public static final String SPECIALITY_ID = "speciality_id";
+    public static final String SUBJECTS_SUBJECTID = "subjects_subjectid";
+    public static final String REQUEST_ID = "request_id";
+    public static final String SCORE = "score";
+    public static final String APPLICANT_ID = "applicant_id";
+    public static final String SPECIALITY_ID1 = "speciality_id";
+    public static final String APPLICANT_ID1 = "applicant_id";
+    public static final String NAME = "name";
+    public static final String SURNAME = "surname";
+    public static final String PASSPORT = "passport";
+    public static final String IDSPECIALTY1 = "idspecialty";
+    public static final String SPECIALTY1 = "specialty";
+    public static final String SUBJECTID = "subjectid";
+    public static final String SUBJECT = "subject";
+
     @Override
     public List<Request> getSpecialistsList() throws SQLException {
         Connection connection = SQLFactory.getConnection();
-        String SQL = "SELECT * FROM applicationssystem.request;";
+        String SQL = SELECT_FROM_APPLICATIONSSYSTEM_REQUEST;
 
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
@@ -27,14 +51,14 @@ public class SQLAdminDAO implements AdminDAO {
         while (resultSet.next()) {
             Request request = new Request();
 
-            request.setApplicant(getApplicantData(resultSet.getInt("applicants_applicant_id")));
-            request.setSpeciality(getSpecialityName(resultSet.getInt("speciality_id")));
-            request.setSubject(getSubjectName(resultSet.getInt("subjects_subjectid")));
-            request.setSpecialityID(resultSet.getInt("speciality_id"));
-            request.setRequestID(resultSet.getInt("request_id"));
-            request.setScore(resultSet.getInt("score"));
-            request.setSubjectsID(resultSet.getInt("subjects_subjectid"));
-            request.setApplicantsID(resultSet.getInt("applicants_applicant_id"));
+            request.setApplicant(getApplicantData(resultSet.getInt(APPLICANTS_APPLICANT_ID)));
+            request.setSpeciality(getSpecialityName(resultSet.getInt(SPECIALITY_ID)));
+            request.setSubject(getSubjectName(resultSet.getInt(SUBJECTS_SUBJECTID)));
+            request.setSpecialityID(resultSet.getInt(SPECIALITY_ID));
+            request.setRequestID(resultSet.getInt(REQUEST_ID));
+            request.setScore(resultSet.getInt(SCORE));
+            request.setSubjectsID(resultSet.getInt(SUBJECTS_SUBJECTID));
+            request.setApplicantsID(resultSet.getInt(APPLICANTS_APPLICANT_ID));
 
             requestList.add(request);
 
@@ -43,7 +67,7 @@ public class SQLAdminDAO implements AdminDAO {
             resultSet.close();
             statement.close();
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return requestList;
@@ -56,21 +80,21 @@ public class SQLAdminDAO implements AdminDAO {
 
     public Applicant getApplicantData(int applicantID) throws SQLException {
         Connection connection = SQLFactory.getConnection();
-        String SQL = "SELECT * FROM applicationssystem.applicants;";
+        String SQL = SELECT_FROM_APPLICATIONSSYSTEM_APPLICANTS;
 
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
         ResultSet resultSet = statement.getResultSet();
 
         while (resultSet.next()) {
-            if (applicantID == resultSet.getInt("applicant_id")) {
+            if (applicantID == resultSet.getInt(APPLICANT_ID)) {
                 Applicant applicant = new Applicant();
 
-                applicant.setApplicantSpeciality(resultSet.getInt("speciality_id"));
-                applicant.setApplicant_id(resultSet.getInt("applicant_id"));
-                applicant.setName(resultSet.getString("name"));
-                applicant.setSurname(resultSet.getString("surname"));
-                applicant.setPassport(resultSet.getString("passport"));
+                applicant.setApplicantSpeciality(resultSet.getInt(SPECIALITY_ID1));
+                applicant.setApplicant_id(resultSet.getInt(APPLICANT_ID1));
+                applicant.setName(resultSet.getString(NAME));
+                applicant.setSurname(resultSet.getString(SURNAME));
+                applicant.setPassport(resultSet.getString(PASSPORT));
                 return applicant;
             }
 
@@ -80,7 +104,7 @@ public class SQLAdminDAO implements AdminDAO {
             resultSet.close();
             statement.close();
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return null;
@@ -90,7 +114,7 @@ public class SQLAdminDAO implements AdminDAO {
     @Override
     public String getSpecialityName(int specID) throws SQLException {
         Connection connection = SQLFactory.getConnection();
-        String SQL = "SELECT * FROM applicationssystem.specialty;";
+        String SQL = SELECT_FROM_APPLICATIONSSYSTEM_SPECIALTY;
 
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
@@ -98,8 +122,8 @@ public class SQLAdminDAO implements AdminDAO {
 
         while (resultSet.next()) {
             {
-                if (specID == resultSet.getInt("idspecialty")) {
-                    return resultSet.getString("specialty");
+                if (specID == resultSet.getInt(IDSPECIALTY1)) {
+                    return resultSet.getString(SPECIALTY1);
 
                 }
 
@@ -110,7 +134,7 @@ public class SQLAdminDAO implements AdminDAO {
             resultSet.close();
             statement.close();
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return null;
@@ -133,7 +157,7 @@ public class SQLAdminDAO implements AdminDAO {
 
             statement.close();
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
@@ -151,7 +175,7 @@ public class SQLAdminDAO implements AdminDAO {
 
             statement.close();
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
@@ -169,7 +193,7 @@ public class SQLAdminDAO implements AdminDAO {
 
             statement.close();
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return null;
@@ -184,15 +208,15 @@ public class SQLAdminDAO implements AdminDAO {
 
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
-        SQL = "SELECT * FROM applicationssystem.specialty;";
+        SQL = SELECT_FROM_APPLICATIONSSYSTEM_SPECIALTY1;
         statement = connection.prepareCall(SQL);
         statement.execute();
         ResultSet resultSet = statement.getResultSet();
 
         while (resultSet.next()) {
             {
-                if (speciality.getSpeciality().equals(resultSet.getString("specialty"))) {
-                    return resultSet.getInt("idspecialty");
+                if (speciality.getSpeciality().equals(resultSet.getString(SPECIALTY))) {
+                    return resultSet.getInt(IDSPECIALTY);
 
                 }
             }
@@ -201,7 +225,7 @@ public class SQLAdminDAO implements AdminDAO {
             resultSet.close();
             statement.close();
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
@@ -213,7 +237,7 @@ public class SQLAdminDAO implements AdminDAO {
     public void savePropetriesForSpeciality(Properties properties, int specialityID) throws SQLException {
         Connection connection = SQLFactory.getConnection();
         String SQL = String.format("INSERT INTO applicationssystem.scpecialty_properties(preferential_places,places,cost,specialty_id) VALUES(\"%s\",\"%s\",\"%s\",\"%s\");"
-                ,properties.getPriferentPlacec(),properties.getPlaces(),properties.getCost(),specialityID);
+                , properties.getPriferentPlacec(), properties.getPlaces(), properties.getCost(), specialityID);
 
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
@@ -222,18 +246,18 @@ public class SQLAdminDAO implements AdminDAO {
 
             statement.close();
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
 
-
     @Override
     public void saveSpecialityAndSubjectsConnection(Integer listOfSubjects, int minScore, int specialityID) throws SQLException {
-        Connection connection = SQLFactory.getConnection();
         String SQL = String.format("INSERT INTO applicationssystem.scpecialty_properties_has_subjects(scpecialty_properties_idtable1,subjects_subjectid,minimum_possitive_score) VALUES(\"%s\",\"%s\",\"%s\");"
-                ,specialityID,listOfSubjects,minScore);
+                , specialityID, listOfSubjects, minScore);
+        Connection connection = SQLFactory.getConnection();
+
 
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
@@ -241,14 +265,14 @@ public class SQLAdminDAO implements AdminDAO {
 
             statement.close();
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
     public String getSubjectName(int specID) throws SQLException {
         Connection connection = SQLFactory.getConnection();
-        String SQL = "SELECT * FROM applicationssystem.subjects;";
+        String SQL = SELECT_FROM_APPLICATIONSSYSTEM_SUBJECTS;
 
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
@@ -256,8 +280,8 @@ public class SQLAdminDAO implements AdminDAO {
 
         while (resultSet.next()) {
             {
-                if (specID == resultSet.getInt("subjectid")) {
-                    return resultSet.getString("subject");
+                if (specID == resultSet.getInt(SUBJECTID)) {
+                    return resultSet.getString(SUBJECT);
 
                 }
 
@@ -268,7 +292,7 @@ public class SQLAdminDAO implements AdminDAO {
             resultSet.close();
             statement.close();
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return null;

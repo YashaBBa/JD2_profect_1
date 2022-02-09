@@ -28,7 +28,7 @@
 
     <input type="submit" value="Press Me"/>
 </form>
-<a href="MyController?command=GO_TO_FUNNY_PAGE">FunnyPage</a>
+
 
 </body>
 </html>

@@ -17,6 +17,14 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class SaveApplicantsDataCommand implements Command {
+
+    public static final String NAME = "name";
+    public static final String SURNAME = "surname";
+    public static final String PASSPORT = "passport";
+    public static final String STUDY_FORMAT = "studyFormat";
+    public static final String MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE_REGISTRATION_INFO = "MyController?command=GO_TO_MAIN_PAGE&registrationInfo=";
+    public static final String COMPLETE = "Complete";
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name;
@@ -25,38 +33,29 @@ public class SaveApplicantsDataCommand implements Command {
         String studyFormat;
 
 
-        name = request.getParameter("name");
-        surname = request.getParameter("surname");
-        passport = request.getParameter("passport");
-        studyFormat = request.getParameter("studyFormat");
+        name = request.getParameter(NAME);
+        surname = request.getParameter(SURNAME);
+        passport = request.getParameter(PASSPORT);
+        studyFormat = request.getParameter(STUDY_FORMAT);
         Applicant applicant = new Applicant();
         applicant.setName(name);
         applicant.setSurname(surname);
         applicant.setPassport(passport);
         applicant.setStudyFormat(studyFormat);
 
-        System.out.println(1 + " - " + 2);
+
         ServiceFactory factory = ServiceFactory.getInstance();
-        ApplicantsService applicantsService=factory.getApplicantsService();
+        ApplicantsService applicantsService = factory.getApplicantsService();
 
-        boolean flag = true;
-
-        if (flag) {
-
-
-            try {
+         try {
                 applicantsService.saveApplicantData(applicant);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
-            response.sendRedirect("MyController?command=GO_TO_MAIN_PAGE&registrationInfo=" + "Complete");
-            //RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/mainPage.jsp");
-            //dispatcher.forward(request, response);
-        } else {
-            request.setAttribute("errorMessage", "smth wrong");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/registration.jsp");
-            dispatcher.forward(request, response);
-        }
+            response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE_REGISTRATION_INFO + COMPLETE);
+
+
     }
 }
+

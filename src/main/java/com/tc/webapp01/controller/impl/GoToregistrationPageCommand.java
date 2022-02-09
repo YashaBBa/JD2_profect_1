@@ -12,12 +12,14 @@ import com.tc.webapp01.entity.Greeting;
 
 public class GoToregistrationPageCommand implements Command {
 
+	public static final String WEB_INF_JSP_REGISTRATION_JSP = "/WEB-INF/jsp/registration.jsp";
+
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
 
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/registration.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher(WEB_INF_JSP_REGISTRATION_JSP);
 		dispatcher.forward(request, response);
 	}
 

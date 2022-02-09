@@ -14,12 +14,14 @@ import com.tc.webapp01.controller.Command;
 
 public class GoToIndexPage implements Command {
 
+	public static final String WEB_INF_JSP_HELLO_PAGE_JSP = "/WEB-INF/jsp/helloPage.jsp";
+
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 
 		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/helloPage.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher(WEB_INF_JSP_HELLO_PAGE_JSP);
 		dispatcher.forward(request, response);
 		
 	}

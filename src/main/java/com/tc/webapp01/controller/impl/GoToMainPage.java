@@ -18,6 +18,9 @@ import com.tc.webapp01.service.impl.FacultyServiceImpl;
 
 public class GoToMainPage implements Command {
 
+    public static final String FACULTY_LIST = "facultyList";
+    public static final String WEB_INF_JSP_MAIN_PAGE_JSP = "/WEB-INF/jsp/mainPage.jsp";
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -25,13 +28,13 @@ public class GoToMainPage implements Command {
         FacultyService facultyService = serviceFactory.getFacultyService();
         try {
             List<Faculty> facultyList= facultyService.allFaculties();
-            request.setAttribute("facultyList",facultyList);
+            request.setAttribute(FACULTY_LIST,facultyList);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/mainPage.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher(WEB_INF_JSP_MAIN_PAGE_JSP);
         dispatcher.forward(request, response);
 
     }

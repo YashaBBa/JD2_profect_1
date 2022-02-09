@@ -15,10 +15,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLSpecialityDAO implements SpecialytiesDAO {
+
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_SPECIALTY = "SELECT * FROM applicationssystem.specialty;";
+    public static final String FACULTIES_IDFACULTIES = "faculties_idfaculties";
+    public static final String IDSPECIALTY = "idspecialty";
+    public static final String FACULTIES_IDFACULTIES1 = "faculties_idfaculties";
+    public static final String SPECIALTY = "specialty";
+    public static final String MINIMUM_SCORE = "minimum_score";
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_SCPECIALTY_PROPERTIES = "SELECT * FROM applicationssystem.scpecialty_properties;";
+    public static final String SPECIALTY_ID = "specialty_id";
+    public static final String PLACES = "places";
+    public static final String COST = "cost";
+    public static final String PREFERENTIAL_PLACES = "preferential_places";
+    public static final String APPLICATION_CAMPAIGN_ID = "application_campaign_id";
+    public static final String STUDY_FORMATS_STUDY_FORMAT_ID = "study_formats_study_format_id";
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_SCPECIALTY_PROPERTIES_HAS_SUBJECTS = "SELECT * FROM applicationssystem.scpecialty_properties_has_subjects;";
+    public static final String SCPECIALTY_PROPERTIES_IDTABLE_1 = "scpecialty_properties_idtable1";
+    public static final String SUBJECTS_SUBJECTID = "subjects_subjectid";
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_SUBJECTS = "SELECT * FROM applicationssystem.subjects;";
+    public static final String SUBJECTID = "subjectid";
+    public static final String SUBJECT = "subject";
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_APPLICANTS = "SELECT * FROM applicationssystem.applicants;";
+    public static final String SPECIALITY_ID = "speciality_id";
+    public static final String PASSPORT = "passport";
+    public static final String NAME = "name";
+    public static final String SURNAME = "surname";
+
+
     @Override
     public List<Speciality> specialityList(int facultyID) throws SQLException {
         Connection connection = SQLFactory.getConnection();
-        java.lang.String SQL = "SELECT * FROM applicationssystem.specialty;";
+        java.lang.String SQL = SELECT_FROM_APPLICATIONSSYSTEM_SPECIALTY;
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
         ResultSet resultSet = statement.getResultSet();
@@ -27,15 +54,15 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
 
         while (resultSet.next()) {
 
-            if (facultyID == resultSet.getInt("faculties_idfaculties")) {
-                Properties properties = propertiesList(resultSet.getInt("idspecialty"));
+            if (facultyID == resultSet.getInt(FACULTIES_IDFACULTIES)) {
+                Properties properties = propertiesList(resultSet.getInt(IDSPECIALTY));
                 Speciality speciality = new Speciality();
-                speciality.setFacultyID(resultSet.getInt("faculties_idfaculties"));
-                speciality.setSpeciality(resultSet.getString("specialty"));
-                speciality.setScore(resultSet.getInt("minimum_score"));
-                speciality.setId(resultSet.getInt("idspecialty"));
+                speciality.setFacultyID(resultSet.getInt(FACULTIES_IDFACULTIES1));
+                speciality.setSpeciality(resultSet.getString(SPECIALTY));
+                speciality.setScore(resultSet.getInt(MINIMUM_SCORE));
+                speciality.setId(resultSet.getInt(IDSPECIALTY));
 
-                speciality.setId(resultSet.getInt("idspecialty"));
+                speciality.setId(resultSet.getInt(IDSPECIALTY));
                 speciality.setProperties(properties);
 
 
@@ -57,7 +84,7 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
     @Override
     public Properties propertiesList(int specialityID) throws SQLException {
         Connection connection = SQLFactory.getConnection();
-        String SQL = "SELECT * FROM applicationssystem.scpecialty_properties;";
+        String SQL = SELECT_FROM_APPLICATIONSSYSTEM_SCPECIALTY_PROPERTIES;
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
         ResultSet resultSet = statement.getResultSet();
@@ -65,15 +92,15 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
 
         while (resultSet.next()) {
 
-            if (specialityID == resultSet.getInt("specialty_id")) {
+            if (specialityID == resultSet.getInt(SPECIALTY_ID)) {
                 Properties properties = new Properties();
-                properties.setPlaces(resultSet.getInt("places"));
-                properties.setCost(resultSet.getDouble("cost"));
+                properties.setPlaces(resultSet.getInt(PLACES));
+                properties.setCost(resultSet.getDouble(COST));
 
-                properties.setSpecialty_id(resultSet.getInt("specialty_id"));
-                properties.setPriferentPlacec(resultSet.getInt("preferential_places"));
-                properties.setApplication_campaign_id(resultSet.getInt("application_campaign_id"));
-                properties.setStudy_formats_study_format_id(resultSet.getInt("study_formats_study_format_id"));
+                properties.setSpecialty_id(resultSet.getInt(SPECIALTY_ID));
+                properties.setPriferentPlacec(resultSet.getInt(PREFERENTIAL_PLACES));
+                properties.setApplication_campaign_id(resultSet.getInt(APPLICATION_CAMPAIGN_ID));
+                properties.setStudy_formats_study_format_id(resultSet.getInt(STUDY_FORMATS_STUDY_FORMAT_ID));
                 try {
                     resultSet.close();
                     statement.close();
@@ -101,18 +128,18 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
     @Override
     public List<Subject> getSubjectList(int specialityID) throws SQLException {
         Connection connection = SQLFactory.getConnection();
-        String SQL = "SELECT * FROM applicationssystem.scpecialty_properties_has_subjects;";
+        String SQL = SELECT_FROM_APPLICATIONSSYSTEM_SCPECIALTY_PROPERTIES_HAS_SUBJECTS;
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
         ResultSet resultSet = statement.getResultSet();
         List<Integer> listOFSpecialitysID = new ArrayList<>();
         while (resultSet.next()) {
-            if (specialityID == resultSet.getInt("scpecialty_properties_idtable1")) {
-                listOFSpecialitysID.add(resultSet.getInt("subjects_subjectid"));
+            if (specialityID == resultSet.getInt(SCPECIALTY_PROPERTIES_IDTABLE_1)) {
+                listOFSpecialitysID.add(resultSet.getInt(SUBJECTS_SUBJECTID));
             }
         }
 
-        SQL = "SELECT * FROM applicationssystem.subjects;";
+        SQL = SELECT_FROM_APPLICATIONSSYSTEM_SUBJECTS;
         statement = connection.prepareCall(SQL);
         statement.execute();
         resultSet = statement.getResultSet();
@@ -120,10 +147,10 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
         while (resultSet.next()) {
 
             for (Integer subID : listOFSpecialitysID) {
-                if (subID == resultSet.getInt("subjectid")) {
+                if (subID == resultSet.getInt(SUBJECTID)) {
                     Subject subject = new Subject();
-                    subject.setSubject(resultSet.getString("subject"));
-                    subject.setSubjectID(resultSet.getInt("subjectid"));
+                    subject.setSubject(resultSet.getString(SUBJECT));
+                    subject.setSubjectID(resultSet.getInt(SUBJECTID));
                     subjectsList.add(subject);
                 }
             }
@@ -145,17 +172,17 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
     @Override
     public List<Applicant> getApplicantList(int specialityID) throws SQLException {
         Connection connection = SQLFactory.getConnection();
-        String SQL = "SELECT * FROM applicationssystem.applicants;";
+        String SQL = SELECT_FROM_APPLICATIONSSYSTEM_APPLICANTS;
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
         ResultSet resultSet = statement.getResultSet();
         List<Applicant> applicantList = new ArrayList<>();
         while (resultSet.next()) {
-            if (specialityID == resultSet.getInt("speciality_id")) {
+            if (specialityID == resultSet.getInt(SPECIALITY_ID)) {
                 Applicant applicant=new Applicant();
-                applicant.setPassport(resultSet.getString("passport"));
-                applicant.setName(resultSet.getString("name"));
-                applicant.setSurname(resultSet.getString("surname"));
+                applicant.setPassport(resultSet.getString(PASSPORT));
+                applicant.setName(resultSet.getString(NAME));
+                applicant.setSurname(resultSet.getString(SURNAME));
                 applicantList.add(applicant);
             }
         }

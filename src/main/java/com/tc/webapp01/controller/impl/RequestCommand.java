@@ -16,11 +16,16 @@ import java.util.List;
 import java.util.Map;
 
 public class RequestCommand implements Command {
+
+    public static final String USER_ID = "userID";
+    public static final String SPECIALITY_ID = "specialityID";
+    public static final String MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE_REQUEST_INFO = "MyController?command=GO_TO_MAIN_PAGE&requestInfo=";
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        int adpplicantId = (int) request.getSession().getAttribute("userID");
-        int specialityID= (int) request.getSession().getAttribute("specialityID");
+        int adpplicantId = (int) request.getSession().getAttribute(USER_ID);
+        int specialityID= (int) request.getSession().getAttribute(SPECIALITY_ID);
         System.out.println(specialityID);
         List<Request> list = new ArrayList<>();
         int finalScore=0;
@@ -59,6 +64,6 @@ public class RequestCommand implements Command {
             }
         }
 
-        response.sendRedirect("MyController?command=GO_TO_MAIN_PAGE&requestInfo=" + correctSave);
+        response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE_REQUEST_INFO + correctSave);
     }
 }

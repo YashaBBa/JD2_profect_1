@@ -11,8 +11,8 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class SQLFactory {
-    private static final String userName="root";
-    private static final String password="8707778Yasha";
+    private static final String userName= "root";
+    private static final String password="root";
     private static final String url="jdbc:mysql://localhost:3306/applicationsSystem";
 
     public static Connection getConnection() throws SQLException {

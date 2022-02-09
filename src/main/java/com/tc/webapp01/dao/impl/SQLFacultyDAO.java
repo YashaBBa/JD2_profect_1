@@ -13,10 +13,14 @@ import java.util.List;
 
 public class SQLFacultyDAO implements FacultyDAO {
 
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_FACULTIES = "SELECT * FROM applicationssystem.faculties;";
+    public static final String FACULTY = "faculty";
+    public static final String IDFACULTIES = "idfaculties";
+
     @Override
     public List<Faculty> allFaculties() throws SQLException {
         Connection connection = SQLFactory.getConnection();
-        String SQL = "SELECT * FROM applicationssystem.faculties;";
+        String SQL = SELECT_FROM_APPLICATIONSSYSTEM_FACULTIES;
 
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
@@ -24,8 +28,8 @@ public class SQLFacultyDAO implements FacultyDAO {
         List<Faculty> faculties = new ArrayList<>();
         while (resultSet.next()) {
             Faculty faculty = new Faculty();
-            faculty.setFaculty(resultSet.getString("faculty"));
-            faculty.setId(resultSet.getInt("idfaculties"));
+            faculty.setFaculty(resultSet.getString(FACULTY));
+            faculty.setId(resultSet.getInt(IDFACULTIES));
             faculties.add(faculty);
 
         }

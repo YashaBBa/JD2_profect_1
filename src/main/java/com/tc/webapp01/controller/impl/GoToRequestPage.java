@@ -18,11 +18,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class GoToRequestPage implements Command {
+
+    public static final String SPECIALITY_ID = "specialityID";
+    public static final String LIST_OF_SUBJECTS = "listOfSubjects";
+    public static final String APPLICANTS_LIST = "applicantsList";
+    public static final String WEB_INF_JSP_REPUEST_PAGE_JSP = "/WEB-INF/jsp/repuestPage.jsp";
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
-        int specialityID = Integer.parseInt(request.getParameter("specialityID"));
+        int specialityID = Integer.parseInt(request.getParameter(SPECIALITY_ID));
         System.out.println(specialityID);
 
 
@@ -32,15 +38,15 @@ public class GoToRequestPage implements Command {
             List<Subject> listOfSubjects = specialitiesService.getSubjectsList(specialityID);
             List<Applicant> applicantsList= specialitiesService.getApplicantsList(specialityID);
 
-            request.setAttribute("listOfSubjects", listOfSubjects);
-            request.setAttribute("applicantsList", applicantsList);
+            request.setAttribute(LIST_OF_SUBJECTS, listOfSubjects);
+            request.setAttribute(APPLICANTS_LIST, applicantsList);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         HttpSession session = request.getSession();
-        session.setAttribute("specialityID",specialityID);
+        session.setAttribute(SPECIALITY_ID,specialityID);
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/repuestPage.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher(WEB_INF_JSP_REPUEST_PAGE_JSP);
         dispatcher.forward(request, response);
     }
 }

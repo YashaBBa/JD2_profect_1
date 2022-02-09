@@ -10,19 +10,6 @@
 </head>
 <body>
 
-<%
-   Greeting obj = (Greeting)request.getAttribute("myobj");
-   if(obj != null){
-      String mes = obj.getMessage();
-%>
-
-<h1 style="color:red">
-<%
-       out.println(mes);
-   }
-%>
-</h1>
-
 
  <h2>Registration</h2>
 	<form action="MyController" method="post">
@@ -49,16 +36,7 @@
 	</form>
 	
 	
-	<%
-	String errorMessage = (String)request.getAttribute("errorMessage");
-	if(errorMessage != null){
-%>
-<h2>
-<%
-	     out.println(errorMessage);
-	}
-%>
-</h2>
+
 <a href="MyController?command=exit">Back</a>
 </body>
 </html>

@@ -13,10 +13,18 @@ import com.tc.webapp01.service.SQLFactory;
 public class SQLUserDAO implements UserDAO {
 
 
+    public static final String SELECT_LOGIN_PASSWORD_ROLES_ID_FROM_APPLICATIONSSYSTEM_USERS = "SELECT login,password,roles_id FROM applicationssystem.users;";
+    public static final String LOGIN = "login";
+    public static final String PASSWORD = "password";
+    public static final String ROLES_ID = "roles_id";
+    public static final String TITILE = "titile";
+    public static final String SELECT_FROM_APPLICATIONSSYSTEM_USERS = "SELECT * FROM applicationssystem.users;";
+    public static final String USER_ID = "user_id";
+
     @Override
     public String authorization(String login, String password) throws DAOException, SQLException {
         Connection connection = SQLFactory.getConnection();
-        String SQL = "SELECT login,password,roles_id FROM applicationssystem.users;";
+        String SQL = SELECT_LOGIN_PASSWORD_ROLES_ID_FROM_APPLICATIONSSYSTEM_USERS;
 
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
@@ -26,9 +34,9 @@ public class SQLUserDAO implements UserDAO {
         int rRoles_id = 0;
 
         while (resultSet.next()) {
-            rLogin = resultSet.getString("login");
-            rPassword = resultSet.getString("password");
-            rRoles_id = resultSet.getInt("roles_id");
+            rLogin = resultSet.getString(LOGIN);
+            rPassword = resultSet.getString(PASSWORD);
+            rRoles_id = resultSet.getInt(ROLES_ID);
             if (rLogin.equals(login) && rPassword.equals(password)) {
                 SQL = "SELECT titile FROM applicationssystem.roles WHERE id=" + rRoles_id + ";";
 
@@ -36,7 +44,7 @@ public class SQLUserDAO implements UserDAO {
                 statement.execute();
                 resultSet = statement.getResultSet();
                 resultSet.next();
-                return resultSet.getString("titile");
+                return resultSet.getString(TITILE);
             }
         }
         try {
@@ -85,7 +93,7 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public int getUserID(String login, String password) throws SQLException {
         Connection connection = SQLFactory.getConnection();
-        String SQL = "SELECT * FROM applicationssystem.users;";
+        String SQL = SELECT_FROM_APPLICATIONSSYSTEM_USERS;
 
         CallableStatement statement = connection.prepareCall(SQL);
         statement.execute();
@@ -95,11 +103,11 @@ public class SQLUserDAO implements UserDAO {
 
 
         while (resultSet.next()) {
-            rLogin = resultSet.getString("login");
-            rPassword = resultSet.getString("password");
+            rLogin = resultSet.getString(LOGIN);
+            rPassword = resultSet.getString(PASSWORD);
             if (rLogin.equals(login) && rPassword.equals(password)) {
 
-                return resultSet.getInt("user_id");
+                return resultSet.getInt(USER_ID);
             }
         }
         try {

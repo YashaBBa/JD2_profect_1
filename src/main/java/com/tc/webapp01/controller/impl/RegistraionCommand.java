@@ -20,6 +20,18 @@ import com.tc.webapp01.service.UserService;
 public class RegistraionCommand implements Command {
 
 
+    public static final String LOGIN = "login";
+    public static final String PASSWORD = "password";
+    public static final String NAME = "name";
+    public static final String SURNAME = "surname";
+    public static final String PASSPORT = "passport";
+    public static final String STUDY_FORMAT = "studyFormat";
+    public static final String MY_CONTROLLER_COMMAND_GO_TO_INDEX_PAGE_REGISTRATION_INFO = "MyController?command=GO_TO_INDEX_PAGE&registrationInfo=";
+    public static final String COMPLETE = "Complete";
+    public static final String ERROR_MESSAGE = "errorMessage";
+    public static final String SMTH_WRONG = "smth wrong";
+    public static final String WEB_INF_JSP_REGISTRATION_JSP = "/WEB-INF/jsp/registration.jsp";
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -30,17 +42,13 @@ public class RegistraionCommand implements Command {
         String passport;
         String studyFormat;
 
-        HttpSession session = request.getSession();
-        session.setAttribute("url", "request url forming process");// application/Controller?aaa=qqq&ddd=hhh
 
-        // save data into DB
-
-        login = request.getParameter("login");
-        password = request.getParameter("password");
-        name = request.getParameter("name");
-        surname = request.getParameter("surname");
-        passport = request.getParameter("passport");
-        studyFormat = request.getParameter("studyFormat");
+        login = request.getParameter(LOGIN);
+        password = request.getParameter(PASSWORD);
+        name = request.getParameter(NAME);
+        surname = request.getParameter(SURNAME);
+        passport = request.getParameter(PASSPORT);
+        studyFormat = request.getParameter(STUDY_FORMAT);
         User user = new User();
         user.setLogin(login);
         user.setPassword(password);
@@ -71,11 +79,11 @@ public class RegistraionCommand implements Command {
                 e.printStackTrace();
             }
 
-            response.sendRedirect("MyController?command=GO_TO_INDEX_PAGE&registrationInfo=" + "Complete");
+            response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_INDEX_PAGE_REGISTRATION_INFO + COMPLETE);
 
         } else {
-            request.setAttribute("errorMessage", "smth wrong");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/registration.jsp");
+            request.setAttribute(ERROR_MESSAGE, SMTH_WRONG);
+            RequestDispatcher dispatcher = request.getRequestDispatcher(WEB_INF_JSP_REGISTRATION_JSP);
             dispatcher.forward(request, response);
         }
 
