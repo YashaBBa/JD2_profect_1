@@ -29,7 +29,7 @@ public class LoginationCommand implements Command {
         String passwrod;
         login = request.getParameter("login");
         passwrod = request.getParameter("password");
-        String logInfo = "Hi.\n It is main page";
+
 
         ServiceFactory factory = ServiceFactory.getInstance();
         UserService userService = factory.getUserService();

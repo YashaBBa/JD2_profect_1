@@ -1,6 +1,7 @@
 package com.tc.webapp01.controller.impl;
 
 import com.tc.webapp01.controller.Command;
+import com.tc.webapp01.dao.DAOException;
 import com.tc.webapp01.entity.Request;
 import com.tc.webapp01.service.ServiceFactory;
 import com.tc.webapp01.service.UserService;
@@ -61,6 +62,8 @@ public class RequestCommand implements Command {
 
                 e.printStackTrace();
                 break;
+            } catch (DAOException e) {
+                e.printStackTrace();
             }
         }
 

@@ -74,12 +74,14 @@ public class UserServiceImpl implements UserService {
             id = userDAO.getUserID(login, password);
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (DAOException e) {
+            e.printStackTrace();
         }
         return id;
     }
 
     @Override
-    public boolean sendApplicantUrequest(Request request1) throws SQLException {
+    public boolean sendApplicantUrequest(Request request1) throws SQLException, DAOException {
         DAOFactory daoFactory = DAOFactory.getInstance();
         UserDAO userDAO = daoFactory.getUserDAO();
         boolean correctSave;

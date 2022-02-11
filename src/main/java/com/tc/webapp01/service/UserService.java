@@ -1,5 +1,6 @@
 package com.tc.webapp01.service;
 
+import com.tc.webapp01.dao.DAOException;
 import com.tc.webapp01.entity.Applicant;
 import com.tc.webapp01.entity.Request;
 import com.tc.webapp01.entity.User;
@@ -19,5 +20,5 @@ public interface UserService {
 
     int getUserID(String login, String login1);
 
-    boolean sendApplicantUrequest(Request request1) throws SQLException;
+    boolean sendApplicantUrequest(Request request1) throws SQLException, DAOException;
 }

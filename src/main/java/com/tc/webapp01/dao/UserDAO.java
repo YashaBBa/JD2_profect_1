@@ -11,7 +11,7 @@ public interface UserDAO {
 	Boolean registration(User user, Applicant applicant)throws DAOException, SQLException;
 
 
-    int getUserID(String login, String password) throws SQLException;
+    int getUserID(String login, String password) throws SQLException, DAOException;
 
-	boolean saveUserRequests(Request request1) throws SQLException;
+	boolean saveUserRequests(Request request1) throws SQLException, DAOException;
 }
