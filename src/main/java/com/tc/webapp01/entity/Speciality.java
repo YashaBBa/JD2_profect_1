@@ -1,16 +1,20 @@
 package com.tc.webapp01.entity;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
-public class Speciality {
+public class Speciality implements Serializable {
     private Integer id;
     private String speciality;
     private Integer score;
     private Integer facultyID;
     private List<Subject> subjectList;
-    private Properties properties;
+    private Property properties;
     private List<String> subjects;
 
+    public Speciality() {
+    }
 
     public List<Subject> getSubjectList() {
         return subjectList;
@@ -28,14 +32,13 @@ public class Speciality {
         this.subjects = subjects;
     }
 
-    public Properties getProperties() {
+    public Property getProperties() {
         return properties;
     }
 
-    public void setProperties(Properties properties) {
+    public void setProperties(Property properties) {
         this.properties = properties;
     }
-
 
 
     public Integer getId() {
@@ -68,5 +71,18 @@ public class Speciality {
 
     public void setFacultyID(Integer facultyID) {
         this.facultyID = facultyID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Speciality that = (Speciality) o;
+        return Objects.equals(id, that.id) && Objects.equals(speciality, that.speciality) && Objects.equals(score, that.score) && Objects.equals(facultyID, that.facultyID) && Objects.equals(subjectList, that.subjectList) && Objects.equals(properties, that.properties) && Objects.equals(subjects, that.subjects);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, speciality, score, facultyID, subjectList, properties, subjects);
     }
 }

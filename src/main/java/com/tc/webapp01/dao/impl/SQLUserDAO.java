@@ -1,123 +1,57 @@
 package com.tc.webapp01.dao.impl;
 
 import java.sql.*;
-import java.util.Map;
 
-import com.tc.webapp01.dao.ConnectionPool;
-import com.tc.webapp01.dao.ConnectionPoolException;
+import com.tc.webapp01.pool.ConnectionPool;
+import com.tc.webapp01.pool.ConnectionPoolException;
 import com.tc.webapp01.dao.DAOException;
 import com.tc.webapp01.dao.UserDAO;
 import com.tc.webapp01.entity.Applicant;
 import com.tc.webapp01.entity.Request;
 import com.tc.webapp01.entity.User;
-import com.tc.webapp01.service.SQLFactory;
 
 public class SQLUserDAO implements UserDAO {
+    private static final String INSERT_INTO_USERS_LOGIN_PASSWORD_VALUES_S_S = "insert into users (login,password) VALUES(?,?)";
+    private static final String SELECT_USER_ID_FROM_USERS_WHERE_LOGIN_S = "SELECT user_id from users where login=?";
+    private static final String INSERT_INTO_APPLICANTS_NAME_SURNAME_PASSPORT_STUDY_FORMAT_APPLICANT_ID_VALUES_S_S_S_S_S = "insert into applicants (name,surname,passport,study_format,applicant_id,privileges) VALUES(?,?,?,?,?,?);";
+    private static final String UPDATE_USERS_SET_APPLICANT_ID_S_WHERE_USER_ID_S = "update users set applicant_id =? where user_id=?";
+    private static final String INSERT_INTO_REQUEST_APPLICANTS_APPLICANT_ID_SUBJECTS_SUBJECTID_SCORE_SPECIALITY_ID_VALUES_S_S_S_S = "insert into request (applicants_applicant_id,subjects_subjectid,score,speciality_id) VALUES(?,?,?,?)";
+    private static final String GET_USER_BY_LOGIN_AND_PASSWORD = "SELECT login,password,roles_id FROM applicationssystem.users WHERE login = ? AND password = ?";
+
+    private static final String SELECT_LOGIN_PASSWORD_ROLES_ID_FROM_APPLICATIONSSYSTEM_USERS = "SELECT login,password,roles_id FROM applicationssystem.users;";
+    private static final String LOGIN = "login";
+    private static final String PASSWORD = "password";
+    private static final String ROLES_ID = "roles_id";
+    private static final String TITILE = "titile";
+    private static final String SELECT_FROM_APPLICATIONSSYSTEM_USERS = "SELECT * FROM applicationssystem.users;";
+    private static final String USER_ID = "user_id";
+    private static final String SELECT_TITILE_FROM_APPLICATIONSSYSTEM_ROLES_WHERE_ID = "SELECT titile FROM applicationssystem.roles WHERE id=";
+    private static final String SELECT_LOGIN_FROM_APPLICATIONSSYSTEM_USERS_WHERE_LOGIN = "SELECT login FROM applicationssystem.users where login=";
+    private static final String INSERT_INTO_APPLICANTS_NAME_SURNAME_PASSPORT_STUDY_FORMAT_VALUES = "insert into applicants (name,surname,passport,study_format) VALUES(?,?,?,?)";
+    private static final String UPDATE_APPLICATIONSSYSTEM_APPLICANTS_SET_RETING_WHERE_APPLICANT_ID = "UPDATE applicationssystem.applicants SET reting=? WHERE applicant_id=?";
+
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
-    public static final String SELECT_LOGIN_PASSWORD_ROLES_ID_FROM_APPLICATIONSSYSTEM_USERS = "SELECT login,password,roles_id FROM applicationssystem.users;";
-    public static final String LOGIN = "login";
-    public static final String PASSWORD = "password";
-    public static final String ROLES_ID = "roles_id";
-    public static final String TITILE = "titile";
-    public static final String SELECT_FROM_APPLICATIONSSYSTEM_USERS = "SELECT * FROM applicationssystem.users;";
-    public static final String USER_ID = "user_id";
-
     @Override
-    public String authorization(String login, String password) throws DAOException, SQLException {
+    public String authorization(String login, String password) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try {
-            connection = connectionPool.takeConnection();
-            String SQL = SELECT_LOGIN_PASSWORD_ROLES_ID_FROM_APPLICATIONSSYSTEM_USERS;
-            statement = connection.prepareStatement(SQL);
-            statement.execute();
-            resultSet = statement.getResultSet();
-            String rLogin;
-            String rPassword;
-            int rRoles_id = 0;
-            while (resultSet.next()) {
-                rLogin = resultSet.getString(LOGIN);
-                rPassword = resultSet.getString(PASSWORD);
-                rRoles_id = resultSet.getInt(ROLES_ID);
-                if (rLogin.equals(login) && rPassword.equals(password)) {
-                    SQL = "SELECT titile FROM applicationssystem.roles WHERE id=" + rRoles_id + ";";
-
-                    statement = connection.prepareCall(SQL);
-                    statement.execute();
-                    resultSet = statement.getResultSet();
-                    resultSet.next();
-                    return resultSet.getString(TITILE);
-                }
-            }
-        } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
-        } catch (SQLException e) {
-            throw new DAOException("User isn't exist", e);
-        } finally {
-            connectionPool.closeConnection(connection, statement, resultSet);
-        }
-        return null;
-    }
-
-    @Override
-    public Boolean registration(User user, Applicant applicant) throws DAOException, SQLException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = connectionPool.takeConnection();
-            String SQL = String.format("insert into users (login,password) VALUES(\"%s\",\"%s\");", user.getLogin(), user.getPassword());
-            statement = connection.prepareStatement(SQL);
-            statement.execute();
-            SQL = String.format("SELECT user_id from users where login=\"%s\"", user.getLogin());
-            statement = connection.prepareStatement(SQL);
-            statement.execute();
-
-            resultSet = statement.getResultSet();
-            resultSet.next();
-            Integer id = resultSet.getInt("user_id");
-
-            SQL = String.format("insert into applicants (name,surname,passport,study_format,applicant_id) VALUES(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\");", applicant.getName(), applicant.getSurname(), applicant.getPassport(), applicant.getStudyFormat(), id);
-            statement = connection.prepareStatement(SQL);
-            statement.execute();
-
-            SQL = String.format("update users set applicant_id = \"%s\" where user_id=\"%s\";", id, id);
-            statement = connection.prepareCall(SQL);
-            statement.execute();
-        } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
-        } catch (SQLException e) {
-            throw new DAOException("User isn't exist", e);
-        } finally {
-            connectionPool.closeConnection(connection, statement, resultSet);
-        }
-
-        return false;
-    }
-
-
-
-  /* @Override
-    public String authorization(String login, String password) throws DAOException, SQLException {
-        Connection connection = SQLFactory.getConnection();
-        String SQL = SELECT_LOGIN_PASSWORD_ROLES_ID_FROM_APPLICATIONSSYSTEM_USERS;
-
-        CallableStatement statement = connection.prepareCall(SQL);
-        statement.execute();
-        ResultSet resultSet = statement.getResultSet();
-        String rLogin;
-        String rPassword;
         int rRoles_id = 0;
+        String SQL;
 
-        while (resultSet.next()) {
-            rLogin = resultSet.getString(LOGIN);
-            rPassword = resultSet.getString(PASSWORD);
-            rRoles_id = resultSet.getInt(ROLES_ID);
-            if (rLogin.equals(login) && rPassword.equals(password)) {
-                SQL = "SELECT titile FROM applicationssystem.roles WHERE id=" + rRoles_id + ";";
+        try {
+            connection = connectionPool.takeConnection();
+            statement = connection.prepareStatement(GET_USER_BY_LOGIN_AND_PASSWORD);
+
+            statement.setString(1, login);
+            statement.setString(2, password);
+            statement.execute();
+            resultSet = statement.getResultSet();
+
+            if (resultSet.next()) {
+                rRoles_id = resultSet.getInt(ROLES_ID);
+                SQL = SELECT_TITILE_FROM_APPLICATIONSSYSTEM_ROLES_WHERE_ID + rRoles_id;
 
                 statement = connection.prepareCall(SQL);
                 statement.execute();
@@ -125,81 +59,71 @@ public class SQLUserDAO implements UserDAO {
                 resultSet.next();
                 return resultSet.getString(TITILE);
             }
-        }
-        try {
-            resultSet.close();
-            statement.close();
-            connection.close();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
 
+        } catch (ConnectionPoolException e) {
+            throw new DAOException("Database server connection has problem", e);
+        } catch (SQLException e) {
+            throw new DAOException("User isn't exist", e);
+        } finally {
+            connectionPool.closeConnection(connection, statement, resultSet);
+        }
         return null;
-    }*/
+    }
 
-   /* @Override
-    public Boolean registration(User user, Applicant applicant) throws DAOException, SQLException {
-        Connection connection = SQLFactory.getConnection();
-        String SQL = String.format("insert into users (login,password) VALUES(\"%s\",\"%s\");", user.getLogin(), user.getPassword());
-        CallableStatement statement = connection.prepareCall(SQL);
-        statement.execute();
-        SQL = String.format("SELECT user_id from users where login=\"%s\"", user.getLogin());
-        statement = connection.prepareCall(SQL);
-        statement.execute();
+    @Override
+    public Boolean registration(User user, Applicant applicant) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
 
-        ResultSet resultSet = statement.getResultSet();
-        resultSet.next();
-        Integer id = resultSet.getInt("user_id");
-
-        SQL = String.format("insert into applicants (name,surname,passport,study_format,applicant_id) VALUES(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\");", applicant.getName(), applicant.getSurname(), applicant.getPassport(), applicant.getStudyFormat(), id);
-        statement = connection.prepareCall(SQL);
-        statement.execute();
-
-        SQL = String.format("update users set applicant_id = \"%s\" where user_id=\"%s\";", id, id);
-        statement = connection.prepareCall(SQL);
-        statement.execute();
         try {
-            resultSet.close();
-            statement.close();
-            connection.close();
+            connection = connectionPool.takeConnection();
+
+            String SQL = INSERT_INTO_USERS_LOGIN_PASSWORD_VALUES_S_S;
+            statement = connection.prepareStatement(SQL);
+            statement.setString(1, user.getLogin());
+            statement.setString(2, user.getPassword());
+            statement.execute();
+
+            SQL = SELECT_USER_ID_FROM_USERS_WHERE_LOGIN_S;
+            statement = connection.prepareStatement(SQL);
+            statement.setString(1, user.getLogin());
+            statement.execute();
+
+            resultSet = statement.getResultSet();
+            resultSet.next();
+            Integer id = resultSet.getInt(USER_ID);
+
+
+            SQL = INSERT_INTO_APPLICANTS_NAME_SURNAME_PASSPORT_STUDY_FORMAT_APPLICANT_ID_VALUES_S_S_S_S_S;
+            statement=connection.prepareStatement(SQL);
+            statement.setString(1, applicant.getName());
+            statement.setString(2, applicant.getSurname());
+            statement.setString(3, applicant.getPassport());
+            statement.setString(4, applicant.getStudyFormat());
+            statement.setInt(5, id);
+            statement.setString(6, applicant.getPrivileges());
+            statement.execute();
+
+
+            SQL = UPDATE_USERS_SET_APPLICANT_ID_S_WHERE_USER_ID_S;
+            statement = connection.prepareStatement(SQL);
+            statement.setInt(1, id);
+            statement.setInt(2, id);
+            statement.execute();
+        } catch (ConnectionPoolException e) {
+            throw new DAOException("Database server connection has problem", e);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new DAOException("User already exist", e);
+        } finally {
+            connectionPool.closeConnection(connection, statement, resultSet);
         }
 
         return false;
-    }*/
+    }
 
-    /* @Override
-     public int getUserID(String login, String password) throws SQLException {
-         Connection connection = SQLFactory.getConnection();
-         String SQL = SELECT_FROM_APPLICATIONSSYSTEM_USERS;
-
-         CallableStatement statement = connection.prepareCall(SQL);
-         statement.execute();
-         ResultSet resultSet = statement.getResultSet();
-         String rLogin;
-         String rPassword;
-
-
-         while (resultSet.next()) {
-             rLogin = resultSet.getString(LOGIN);
-             rPassword = resultSet.getString(PASSWORD);
-             if (rLogin.equals(login) && rPassword.equals(password)) {
-
-                 return resultSet.getInt(USER_ID);
-             }
-         }
-         try {
-             resultSet.close();
-             statement.close();
-             connection.close();
-         } catch (SQLException e) {
-             System.out.println(e.getMessage());
-         }
-         return 0;
-     }*/
     @Override
-    public int getUserID(String login, String password) throws SQLException, DAOException {
+    public int getUserID(String login, String password) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -225,64 +149,91 @@ public class SQLUserDAO implements UserDAO {
         } catch (ConnectionPoolException e) {
             throw new DAOException("Database server connection has problem", e);
         } catch (SQLException e) {
-            throw new DAOException("User isn't exist", e);
+            throw new DAOException("SQL command exception", e);
         } finally {
             connectionPool.closeConnection(connection, statement, resultSet);
         }
-
-
-
 
         return 0;
     }
 
     @Override
-    public boolean saveUserRequests(Request request1) throws SQLException, DAOException {
+    public boolean saveUserRequests(Request request1) throws  DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
 
+        String SQL = INSERT_INTO_REQUEST_APPLICANTS_APPLICANT_ID_SUBJECTS_SUBJECTID_SCORE_SPECIALITY_ID_VALUES_S_S_S_S;
 
-
-        String SQL = String.format("insert into request (applicants_applicant_id,subjects_subjectid,score,speciality_id) VALUES(\"%s\",\"%s\",\"%s\",\"%s\");"
-                , request1.getApplicantsID(), request1.getSubjectsID(), request1.getScore(), request1.getSpecialityID());
 
         try {
-            connection=connectionPool.takeConnection();
+            connection = connectionPool.takeConnection();
             statement = connection.prepareStatement(SQL);
+            statement.setInt(1, request1.getApplicantsID());
+            statement.setInt(2, request1.getSubjectsID());
+            statement.setInt(3, request1.getScore());
+            statement.setInt(4, request1.getSpecialityID());
+            statement.execute();
+            SQL = UPDATE_APPLICATIONSSYSTEM_APPLICANTS_SET_RETING_WHERE_APPLICANT_ID;
+            statement = connection.prepareStatement(SQL);
+            statement.setInt(1, request1.getScore());
+            statement.setInt(2, request1.getApplicantsID());
             statement.execute();
         } catch (ConnectionPoolException e) {
             throw new DAOException("Database server connection has problem", e);
         } catch (SQLException e) {
-            throw new DAOException("User isn't exist", e);
+            throw new DAOException("SQL command exception", e);
+        } finally {
+            connectionPool.closeConnection(connection, statement);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean loginExists(String login) throws DAOException{
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String SQL = SELECT_LOGIN_FROM_APPLICATIONSSYSTEM_USERS_WHERE_LOGIN + login;
+        try {
+            connection = connectionPool.takeConnection();
+            statement = connection.prepareStatement(SQL);
+            statement.execute();
+            ResultSet resultSet = statement.getResultSet();
+            return resultSet.next();
+        } catch (SQLException e) {
+            return false;
+        } catch (ConnectionPoolException e) {
+            throw new DAOException("Database server connection has problem", e);
+        } finally {
+            connectionPool.closeConnection(connection, statement);
+        }
+
+    }
+
+    @Override
+    public boolean saveApplicantData(Applicant applicant) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        String SQL = INSERT_INTO_APPLICANTS_NAME_SURNAME_PASSPORT_STUDY_FORMAT_VALUES;
+        try {
+            connection = connectionPool.takeConnection();
+            statement = connection.prepareStatement(SQL);
+            statement.setString(1, applicant.getName());
+            statement.setString(2, applicant.getSurname());
+            statement.setString(3, applicant.getPassport());
+            statement.setString(4, applicant.getStudyFormat());
+            statement.execute();
+        } catch (SQLException e) {
+            throw new DAOException("SQL command exception", e);
+        } catch (ConnectionPoolException e) {
+            throw new DAOException("Database server connection has problem", e);
         } finally {
             connectionPool.closeConnection(connection, statement);
         }
 
 
-
-
         return true;
     }
-
-    /*@Override
-    public boolean saveUserRequests(Request request1) throws SQLException {
-        Connection connection = SQLFactory.getConnection();
-
-        String SQL = String.format("insert into request (applicants_applicant_id,subjects_subjectid,score,speciality_id) VALUES(\"%s\",\"%s\",\"%s\",\"%s\");"
-                , request1.getApplicantsID(), request1.getSubjectsID(), request1.getScore(), request1.getSpecialityID());
-
-        CallableStatement statement = connection.prepareCall(SQL);
-        statement.execute();
-        try {
-
-            statement.close();
-            connection.close();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return true;
-    }*/
 
 
 }

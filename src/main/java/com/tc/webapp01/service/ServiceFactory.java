@@ -9,7 +9,7 @@ public final class ServiceFactory {
 
     private final FacultyService facultyService = new FacultyServiceImpl();
 
-    private final ApplicantsService applicantsService = new ApplicantServiceImpl();
+
 
     private final SpecialitiesService specialitiesService = new SpecialitiesServiceImpl();
 
@@ -31,9 +31,7 @@ public final class ServiceFactory {
         return facultyService;
     }
 
-    public ApplicantsService getApplicantsService() {
-        return applicantsService;
-    }
+
 
     public SpecialitiesService getSpecialitiesService() {
         return specialitiesService;

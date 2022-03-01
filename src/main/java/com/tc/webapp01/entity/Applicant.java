@@ -1,20 +1,51 @@
 package com.tc.webapp01.entity;
 
-public class Applicant {
-    private Integer applicant_id;
+import java.io.Serializable;
+import java.util.Objects;
+
+public class Applicant implements Serializable {
+    private Integer applicantId;
     private String name;
     private String surname;
     private String passport;
     private String studyFormat;
     private Integer specialityPropId;
     private int applicantSpeciality;
+    private String privileges;
 
-    public Integer getApplicant_id() {
-        return applicant_id;
+
+
+
+
+    public int getScore() {
+        return score;
     }
 
-    public void setApplicant_id(Integer applicant_id) {
-        this.applicant_id = applicant_id;
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    private int score;
+
+    public String getPrivileges() {
+        return privileges;
+    }
+
+    public void setPrivileges(String privileges) {
+        this.privileges = privileges;
+    }
+
+
+
+    public Applicant() {
+    }
+
+    public Integer getApplicantId() {
+        return applicantId;
+    }
+
+    public void setApplicantId(Integer applicantId) {
+        this.applicantId = applicantId;
     }
 
     public String getName() {
@@ -64,5 +95,18 @@ public class Applicant {
 
     public int getApplicantSpeciality() {
         return applicantSpeciality;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Applicant applicant = (Applicant) o;
+        return applicantSpeciality == applicant.applicantSpeciality && Objects.equals(applicantId, applicant.applicantId) && Objects.equals(name, applicant.name) && Objects.equals(surname, applicant.surname) && Objects.equals(passport, applicant.passport) && Objects.equals(studyFormat, applicant.studyFormat) && Objects.equals(specialityPropId, applicant.specialityPropId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(applicantId, name, surname, passport, studyFormat, specialityPropId, applicantSpeciality);
     }
 }

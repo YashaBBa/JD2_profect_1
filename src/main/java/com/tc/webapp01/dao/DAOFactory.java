@@ -4,11 +4,6 @@ import com.tc.webapp01.dao.impl.SQLAdminDAO;
 import com.tc.webapp01.dao.impl.SQLFacultyDAO;
 import com.tc.webapp01.dao.impl.SQLSpecialityDAO;
 import com.tc.webapp01.dao.impl.SQLUserDAO;
-import com.tc.webapp01.service.SQLFactory;
-
-import javax.servlet.ServletContext;
-import java.io.File;
-import java.util.ResourceBundle;
 
 public final class DAOFactory {
     private static final DAOFactory instance = new DAOFactory();

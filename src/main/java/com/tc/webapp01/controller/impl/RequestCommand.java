@@ -1,8 +1,8 @@
 package com.tc.webapp01.controller.impl;
 
 import com.tc.webapp01.controller.Command;
-import com.tc.webapp01.dao.DAOException;
 import com.tc.webapp01.entity.Request;
+import com.tc.webapp01.service.ServiceException;
 import com.tc.webapp01.service.ServiceFactory;
 import com.tc.webapp01.service.UserService;
 
@@ -10,17 +10,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RequestCommand implements Command {
 
-    public static final String USER_ID = "userID";
-    public static final String SPECIALITY_ID = "specialityID";
-    public static final String MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE_REQUEST_INFO = "MyController?command=GO_TO_MAIN_PAGE&requestInfo=";
+    private static final String USER_ID = "userID";
+    private static final String SPECIALITY_ID = "specialityID";
+    private static final String MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE_REQUEST_INFO = "MyController?command=GO_TO_MAIN_PAGE&requestInfo=";
+    private static final String EXCEPTION_REDIRECT = "MyController?command=GO_TO_ERROR_PAGE";
+    private static final String MY_CONTROLLER_COMMAND_GO_TO_ERROR_PAGE = "MyController?command=GO_TO_ERROR_PAGE";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -58,12 +57,8 @@ public class RequestCommand implements Command {
         for (Request request2 : list) {
             try {
                 correctSave = userService.sendApplicantUrequest(request2);
-            } catch (SQLException e) {
-
-                e.printStackTrace();
-                break;
-            } catch (DAOException e) {
-                e.printStackTrace();
+            } catch (ServiceException e) {
+                response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_ERROR_PAGE);
             }
         }
 

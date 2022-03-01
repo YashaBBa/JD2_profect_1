@@ -2,6 +2,7 @@ package com.tc.webapp01.controller.impl;
 
 import com.tc.webapp01.controller.Command;
 import com.tc.webapp01.service.AdminService;
+import com.tc.webapp01.service.ServiceException;
 import com.tc.webapp01.service.ServiceFactory;
 
 import javax.servlet.RequestDispatcher;
@@ -14,11 +15,12 @@ import java.sql.SQLException;
 
 public class ApplayRequest implements Command {
 
-    public static final String APPLICANT_ID = "applicantID";
-    public static final String SPECIALITY_ID = "specialityID";
-    public static final String MIDL_SCORE = "midlScore";
-    public static final String REQUEST_ID = "requestID";
-    public static final String MY_CONTROLLER_COMMAND_GO_TO_REQUEST_LIST_PAGE = "MyController?command=GO_TO_REQUEST_LIST_PAGE";
+    private static final String APPLICANT_ID = "applicantID";
+    private static final String SPECIALITY_ID = "specialityID";
+    private static final String MIDL_SCORE = "midlScore";
+    private static final String REQUEST_ID = "requestID";
+    private static final String MY_CONTROLLER_COMMAND_GO_TO_REQUEST_LIST_PAGE = "MyController?command=GO_TO_REQUEST_LIST_PAGE";
+    private static final String MY_CONTROLLER_COMMAND_GO_TO_ERROR_PAGE = "MyController?command=GO_TO_ERROR_PAGE";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,10 +34,14 @@ public class ApplayRequest implements Command {
         String requestID = request.getParameter(REQUEST_ID);
         try {
             Boolean b = adminService.applyRequest(specialityID, applicantID);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }  catch (ServiceException e) {
+            response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_ERROR_PAGE);
         }
-        Boolean deleteRequests = adminService.deleteRequest(applicantID);
+        try {
+            Boolean deleteRequests = adminService.deleteRequest(applicantID);
+        } catch (ServiceException e) {
+            response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_ERROR_PAGE);
+        }
         response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_REQUEST_LIST_PAGE);
 
 

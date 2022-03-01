@@ -1,9 +1,11 @@
 package com.tc.webapp01.entity;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import java.io.Serializable;
 import java.util.Map;
+import java.util.Objects;
 
-public class Request {
+public class Request implements Serializable {
     private Integer requestID;
     private Integer score;
     private Integer subjectsID;
@@ -14,6 +16,10 @@ public class Request {
     private Integer specialityID;
     private String subject;
     private Integer finalScore;
+
+    public Request() {
+    }
+
     public Integer getFinalScore() {
         return finalScore;
     }
@@ -21,8 +27,6 @@ public class Request {
     public void setFinalScore(Integer finalScore) {
         this.finalScore = finalScore;
     }
-
-
 
 
     public String getSubject() {
@@ -74,7 +78,7 @@ public class Request {
         this.subIdAndScore = subIdAndScore;
     }
 
-    private Map<Integer,Integer> subIdAndScore;
+    private Map<Integer, Integer> subIdAndScore;
 
     public Integer getRequestID() {
         return requestID;
@@ -121,5 +125,18 @@ public class Request {
                 ", specialityID=" + specialityID +
                 ", subIdAndScore=" + subIdAndScore +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Request request = (Request) o;
+        return Objects.equals(requestID, request.requestID) && Objects.equals(score, request.score) && Objects.equals(subjectsID, request.subjectsID) && Objects.equals(applicantsID, request.applicantsID) && Objects.equals(speciality, request.speciality) && Objects.equals(applicant, request.applicant) && Objects.equals(specialityObj, request.specialityObj) && Objects.equals(specialityID, request.specialityID) && Objects.equals(subject, request.subject) && Objects.equals(finalScore, request.finalScore) && Objects.equals(subIdAndScore, request.subIdAndScore);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(requestID, score, subjectsID, applicantsID, speciality, applicant, specialityObj, specialityID, subject, finalScore, subIdAndScore);
     }
 }

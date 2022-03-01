@@ -6,17 +6,19 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.tc.webapp01.controller.Command;
 import com.tc.webapp01.entity.Greeting;
 
 public class GoToregistrationPageCommand implements Command {
 
-	public static final String WEB_INF_JSP_REGISTRATION_JSP = "/WEB-INF/jsp/registration.jsp";
+	private static final String WEB_INF_JSP_REGISTRATION_JSP = "/WEB-INF/jsp/registration.jsp";
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		HttpSession session=request.getSession();
+		session.setAttribute("url","MyController?command=GO_TO_REGISTRATION_PAGE");
 
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(WEB_INF_JSP_REGISTRATION_JSP);

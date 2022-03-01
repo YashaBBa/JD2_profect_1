@@ -1,24 +1,18 @@
 package com.tc.webapp01.service.impl;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.tc.webapp01.dao.DAOException;
 import com.tc.webapp01.dao.DAOFactory;
 import com.tc.webapp01.dao.UserDAO;
 import com.tc.webapp01.entity.Applicant;
 import com.tc.webapp01.entity.Request;
 import com.tc.webapp01.entity.User;
-import com.tc.webapp01.service.SQLFactory;
 import com.tc.webapp01.service.ServiceException;
 import com.tc.webapp01.service.UserService;
 
 public class UserServiceImpl implements UserService {
 
     @Override
-    public String authorisation(String login, String password) throws ServiceException, SQLException {
+    public String authorisation(String login, String password) throws ServiceException {
 
 
         DAOFactory daoFactory = DAOFactory.getInstance();
@@ -27,7 +21,7 @@ public class UserServiceImpl implements UserService {
         try {
             role = userDAO.authorization(login, password);
         } catch (DAOException e) {
-            e.printStackTrace();
+            throw new ServiceException("Authorization exception",e);
         }
         return role;
 
@@ -35,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean registration(User user, Applicant applicant) throws SQLException {
+    public boolean registration(User user, Applicant applicant) throws ServiceException {
 
         DAOFactory daoFactory = DAOFactory.getInstance();
         UserDAO userDAO = daoFactory.getUserDAO();
@@ -43,21 +37,21 @@ public class UserServiceImpl implements UserService {
         try {
             role = userDAO.registration(user, applicant);
         } catch (DAOException e) {
-            e.printStackTrace();
+            throw new ServiceException("Registration exception",e);
         }
         return role;
 
     }
 
     @Override
-    public boolean loginExists(String login) throws SQLException {
-        Connection connection = SQLFactory.getConnection();
-        String SQL = "SELECT login FROM applicationssystem.users where login=\"" + login + "\";";
-
-        CallableStatement statement = connection.prepareCall(SQL);
-        statement.execute();
-        ResultSet resultSet = statement.getResultSet();
-        return resultSet.next();
+    public boolean loginExists(String login) throws ServiceException {
+        DAOFactory daoFactory = DAOFactory.getInstance();
+        UserDAO userDAO = daoFactory.getUserDAO();
+        try {
+            return userDAO.loginExists(login);
+        } catch (DAOException e) {
+            throw new ServiceException("Database server connection has problem", e);
+        }
     }
 
     @Override
@@ -66,27 +60,44 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int getUserID(String login, String password) {
+    public int getUserID(String login, String password) throws ServiceException {
         DAOFactory daoFactory = DAOFactory.getInstance();
         UserDAO userDAO = daoFactory.getUserDAO();
-        int id=0;
+        int id = 0;
         try {
             id = userDAO.getUserID(login, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
         } catch (DAOException e) {
-            e.printStackTrace();
+            throw new ServiceException("Database server connection has problem", e);
         }
         return id;
     }
 
     @Override
-    public boolean sendApplicantUrequest(Request request1) throws SQLException, DAOException {
+    public boolean sendApplicantUrequest(Request request1) throws ServiceException {
         DAOFactory daoFactory = DAOFactory.getInstance();
         UserDAO userDAO = daoFactory.getUserDAO();
         boolean correctSave;
-        correctSave=userDAO.saveUserRequests(request1);
-        return correctSave;
+        try {
+            correctSave = userDAO.saveUserRequests(request1);
+            return correctSave;
+        } catch (DAOException e) {
+            throw new ServiceException("Database server connection has problem", e);
+        }
+
+    }
+
+    @Override
+    public Boolean saveApplicantData(Applicant applicant) throws ServiceException{
+        DAOFactory daoFactory = DAOFactory.getInstance();
+        UserDAO userDAO = daoFactory.getUserDAO();
+        boolean saveApplicant;
+        try {
+            saveApplicant = userDAO.saveApplicantData(applicant);
+        } catch (DAOException e) {
+            throw new ServiceException("Database server connection has problem", e);
+        }
+
+        return saveApplicant;
     }
 
 
