@@ -18,6 +18,7 @@ public class ChangeLocaleCommand implements Command {
     private static final String LOCALE_RU = "ru";
     private static final String LOCALE_EN = "en";
     private static final String MY_CONTROLLER_COMMAND_GO_TO_INDEX_PAGE = "MyController?command=GO_TO_INDEX_PAGE&";
+    private static final String URL = "url";
 
 
     @Override
@@ -35,7 +36,7 @@ public class ChangeLocaleCommand implements Command {
             Locale localeEN = resourceBundleEN.getLocale();
             request.getSession().setAttribute(LOCALE, localeEN);
         }
-        String url= (String) request.getSession().getAttribute("url");
+        String url= (String) request.getSession().getAttribute(URL);
 
 
        // RequestDispatcher dispatcher = request.getRequestDispatcher(url);

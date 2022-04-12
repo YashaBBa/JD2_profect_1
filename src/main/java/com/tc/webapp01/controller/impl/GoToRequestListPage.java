@@ -24,6 +24,8 @@ public class GoToRequestListPage implements Command {
     private static final String REQUEST_LIST = "requestList";
     private static final String WEB_INF_JSP_REQUESTS_LIST_PAGE_JSP = "/WEB-INF/jsp/requestsListPage.jsp";
     private static final String MY_CONTROLLER_COMMAND_GO_TO_ERROR_PAGE = "MyController?command=GO_TO_ERROR_PAGE";
+    private static final String MY_CONTROLLER_COMMAND_GO_TO_REQUEST_LIST_PAGE = "MyController?command=GO_TO_REQUEST_LIST_PAGE";
+    private static final String URL = "url";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -31,7 +33,7 @@ public class GoToRequestListPage implements Command {
         AdminService adminService = serviceFactory.getAdminService();
 
         HttpSession session=request.getSession();
-        session.setAttribute("url","MyController?command=GO_TO_REQUEST_LIST_PAGE");
+        session.setAttribute(URL, MY_CONTROLLER_COMMAND_GO_TO_REQUEST_LIST_PAGE);
 
         int finalScore = 0;
         try {

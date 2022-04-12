@@ -15,6 +15,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class SpecialitiesServiceImpl implements SpecialitiesService {
+
+    private static final String DATABASE_SERVER_CONNECTION_HAS_PROBLEM = "Database server connection has problem";
+
     @Override
     public List<Speciality> allSpecialities(int facultyID) throws ServiceException{
         DAOFactory daoFactory = DAOFactory.getInstance();
@@ -23,7 +26,7 @@ public class SpecialitiesServiceImpl implements SpecialitiesService {
         try {
             specialityList = specialytiesDAO.specialityList(facultyID);
         } catch (DAOException e) {
-            throw new ServiceException("Database server connection has problem", e);
+            throw new ServiceException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         }
 
         return specialityList;
@@ -37,7 +40,7 @@ public class SpecialitiesServiceImpl implements SpecialitiesService {
         try {
             properties = specialytiesDAO.propertiesList(specialityID);
         } catch (DAOException e) {
-            throw new ServiceException("Database server connection has problem", e);
+            throw new ServiceException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         }
 
         return properties;
@@ -52,7 +55,7 @@ public class SpecialitiesServiceImpl implements SpecialitiesService {
         try {
             getSubjectList = specialytiesDAO.getSubjectList(specilityID);
         } catch (DAOException e) {
-            throw new ServiceException("Database server connection has problem", e);
+            throw new ServiceException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         }
 
         return getSubjectList;
@@ -68,10 +71,26 @@ public class SpecialitiesServiceImpl implements SpecialitiesService {
         try {
             applicantList = specialytiesDAO.getApplicantList(specialityID);
         } catch (DAOException e) {
-            throw new ServiceException("Database server connection has problem", e);
+            throw new ServiceException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         }
 
         return applicantList;
 
+    }
+
+    @Override
+    public Boolean checkDeadLineTime() throws ServiceException {
+
+        DAOFactory daoFactory = DAOFactory.getInstance();
+        SpecialytiesDAO specialytiesDAO = daoFactory.getSpecialytiesDAO();
+
+        Boolean outOfDeadlineTime= null;
+        try {
+            outOfDeadlineTime = specialytiesDAO.checkDeadlineTime();
+        } catch (DAOException e) {
+            throw new ServiceException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
+        }
+
+        return outOfDeadlineTime;
     }
 }

@@ -40,6 +40,10 @@ public final class CommandProvider {
         commands.put(SORT_BEST_STUDENTS, new SortBestStudents());
         commands.put(CHANGE_LOCALE_RU_COMMAND, new ChangeLocaleCommand());
         commands.put(CHANGE_LOCALE_EN_COMMAND, new ChangeLocaleCommand());
+        commands.put("changeDate", new ChangeDate());
+        commands.put("ApplyApplicants",new ApplyApplicants());
+        commands.put("redactSpeciality",new redactSpeciality());
+
 
         commands.put(GO_TO_SAVE_NEW_SPECIALITY_PAGE, new GoToCreatingSpecialityPage());
         commands.put(REJECT_REQUEST, new RejectRequest());

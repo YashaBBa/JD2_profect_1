@@ -20,19 +20,44 @@
 <body>
 <form action="MyController" method="post">
     <input type="hidden" name="command" value="saveApplicantData">
+    <input type="hidden" name="changeData" value="true">
     ${name}
-    <input type="text" name="name" value=""/>
+    <label>
+        <input type="text" name="name" value="${requestScope.applicantData.name}"/>
+    </label>
     <br/>
     ${surname}
-    <input type="text" name="surname" value=""/>
+    <label>
+        <input type="text" name="surname" value="${requestScope.applicantData.surname}"/>
+    </label>
     <br/>
     ${passport}
-    <input type="text" name="passport" value=""/>
+    <label>
+        <input type="text" name="passport" value="${requestScope.applicantData.passport}"/>
+    </label>
     <br/>
     ${studyFormat}
-    <input type="text" name="studyFormat" value=""/>
+    <label>
+        <input type="text" name="studyFormat" value="${requestScope.applicantData.studyFormat}"/>
+    </label>
+
     <br/>
-    <input type="submit" value="Press Me"/>
+    <input type="submit" value="Chang Data"/>
+</form>
+<form>
+    <input type="hidden" name="command" value="saveApplicantData">
+    <input type="hidden" name="changePassword" value="true">
+    Old Password
+    <label>
+
+        <input type="text" name="password" value=""/>
+    </label>
+    New Password
+    <label>
+
+        <input type="text" name="password1" value=""/>
+    </label>
+    <input type="submit" value="Chang Password"/>
 </form>
 <br/>
 <form action="MyController" method="post">

@@ -12,8 +12,27 @@ public class Speciality implements Serializable {
     private List<Subject> subjectList;
     private Property properties;
     private List<String> subjects;
+    private Integer places;
+    private List<Applicant> listOfApplicants;
+
+    public List<Applicant> getListOfApplicants() {
+        return listOfApplicants;
+    }
+
+    public void setListOfApplicants(List<Applicant> listOfApplicants) {
+        this.listOfApplicants = listOfApplicants;
+    }
+
 
     public Speciality() {
+    }
+
+    public Integer getPlaces() {
+        return places;
+    }
+
+    public void setPlaces(Integer places) {
+        this.places = places;
     }
 
     public List<Subject> getSubjectList() {

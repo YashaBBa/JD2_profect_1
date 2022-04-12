@@ -4,8 +4,6 @@ import com.tc.webapp01.entity.Applicant;
 import com.tc.webapp01.entity.Request;
 import com.tc.webapp01.entity.User;
 
-import java.sql.SQLException;
-
 public interface UserDAO {
 	String authorization(String login, String password) throws DAOException;
 	Boolean registration(User user, Applicant applicant) throws DAOException;
@@ -19,5 +17,10 @@ public interface UserDAO {
 
 
     boolean saveApplicantData(Applicant applicant) throws DAOException;
+
+    Applicant getApplicantData(String id) throws DAOException;
+
+    Boolean changePassword(String password, String password1, int id) throws DAOException;
+
 }
 

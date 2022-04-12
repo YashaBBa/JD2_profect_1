@@ -30,6 +30,7 @@ public class SaveSpeciality implements Command {
     private static final String WEB_INF_JSP_MAIN_PAGE_JSP = "/WEB-INF/jsp/mainPage.jsp";
 
     private static final String MY_CONTROLLER_COMMAND_GO_TO_ERROR_PAGE = "MyController?command=GO_TO_ERROR_PAGE";
+    private static final String MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE = "MyController?command=GO_TO_MAIN_PAGE";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,6 +38,7 @@ public class SaveSpeciality implements Command {
         AdminService adminService = serviceFactory.getAdminService();
         Speciality speciality = new Speciality();
         speciality.setSpeciality(request.getParameter(SPECIALITY_NAME));
+    String specId=request.getParameter(FACULTY_ID);
         speciality.setFacultyID(Integer.valueOf(request.getParameter(FACULTY_ID)));
         speciality.setScore(Integer.valueOf(request.getParameter(MIN_SCORE)));
         int specialityID = 0;
@@ -68,8 +70,8 @@ public class SaveSpeciality implements Command {
             }
         }
 
-        RequestDispatcher requestDispatcher;
-        requestDispatcher = request.getRequestDispatcher(WEB_INF_JSP_MAIN_PAGE_JSP);
-        requestDispatcher.forward(request, response);
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher(MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE);
+        dispatcher.forward(request, response);
     }
 }

@@ -37,11 +37,6 @@ public class ApplayRequest implements Command {
         }  catch (ServiceException e) {
             response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_ERROR_PAGE);
         }
-        try {
-            Boolean deleteRequests = adminService.deleteRequest(applicantID);
-        } catch (ServiceException e) {
-            response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_ERROR_PAGE);
-        }
         response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_REQUEST_LIST_PAGE);
 
 

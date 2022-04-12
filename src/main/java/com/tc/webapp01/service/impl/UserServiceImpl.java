@@ -11,6 +11,10 @@ import com.tc.webapp01.service.UserService;
 
 public class UserServiceImpl implements UserService {
 
+    private static final String DATABASE_SERVER_CONNECTION_HAS_PROBLEM = "Database server connection has problem";
+    private static final String REGISTRATION_EXCEPTION = "Registration exception";
+    private static final String AUTHORIZATION_EXCEPTION = "Authorization exception";
+
     @Override
     public String authorisation(String login, String password) throws ServiceException {
 
@@ -21,7 +25,7 @@ public class UserServiceImpl implements UserService {
         try {
             role = userDAO.authorization(login, password);
         } catch (DAOException e) {
-            throw new ServiceException("Authorization exception",e);
+            throw new ServiceException(AUTHORIZATION_EXCEPTION, e);
         }
         return role;
 
@@ -37,7 +41,7 @@ public class UserServiceImpl implements UserService {
         try {
             role = userDAO.registration(user, applicant);
         } catch (DAOException e) {
-            throw new ServiceException("Registration exception",e);
+            throw new ServiceException(REGISTRATION_EXCEPTION, e);
         }
         return role;
 
@@ -50,7 +54,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userDAO.loginExists(login);
         } catch (DAOException e) {
-            throw new ServiceException("Database server connection has problem", e);
+            throw new ServiceException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         }
     }
 
@@ -67,7 +71,7 @@ public class UserServiceImpl implements UserService {
         try {
             id = userDAO.getUserID(login, password);
         } catch (DAOException e) {
-            throw new ServiceException("Database server connection has problem", e);
+            throw new ServiceException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         }
         return id;
     }
@@ -81,23 +85,51 @@ public class UserServiceImpl implements UserService {
             correctSave = userDAO.saveUserRequests(request1);
             return correctSave;
         } catch (DAOException e) {
-            throw new ServiceException("Database server connection has problem", e);
+            throw new ServiceException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         }
 
     }
 
     @Override
-    public Boolean saveApplicantData(Applicant applicant) throws ServiceException{
+    public Boolean saveApplicantData(Applicant applicant) throws ServiceException {
         DAOFactory daoFactory = DAOFactory.getInstance();
         UserDAO userDAO = daoFactory.getUserDAO();
         boolean saveApplicant;
         try {
             saveApplicant = userDAO.saveApplicantData(applicant);
         } catch (DAOException e) {
-            throw new ServiceException("Database server connection has problem", e);
+            throw new ServiceException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         }
 
         return saveApplicant;
+    }
+
+    @Override
+    public Applicant getUserData(String id) throws ServiceException {
+        DAOFactory daoFactory = DAOFactory.getInstance();
+        UserDAO userDAO = daoFactory.getUserDAO();
+        Applicant applicant = null;
+        try {
+            applicant = userDAO.getApplicantData(id);
+        } catch (DAOException e) {
+            throw new ServiceException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
+        }
+
+        return applicant;
+    }
+
+    @Override
+    public Boolean changePassword(String password, String password1, int id) throws ServiceException {
+        DAOFactory daoFactory = DAOFactory.getInstance();
+        UserDAO userDAO = daoFactory.getUserDAO();
+        Boolean change = false;
+        try {
+            change = userDAO.changePassword(password, password1,id);
+        } catch (DAOException e) {
+            throw new ServiceException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
+        }
+
+        return change;
     }
 
 

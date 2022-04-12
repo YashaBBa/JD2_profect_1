@@ -11,12 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SortBestStudents implements Command {
+
+    public static final String APPLICANTS = "applicants";
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Applicant> applicantList = new ArrayList<>();
-        String applicants = request.getParameter("applicants");
+        String applicants = request.getParameter(APPLICANTS);
         System.out.println(applicants);
-        applicantList = (List<Applicant>) request.getAttribute("applicants");
+        applicantList = (List<Applicant>) request.getAttribute(APPLICANTS);
         for (Applicant applicant : applicantList) {
             System.out.println(applicant.getName());
         }

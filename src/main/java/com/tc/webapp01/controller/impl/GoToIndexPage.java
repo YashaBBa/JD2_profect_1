@@ -16,12 +16,14 @@ import com.tc.webapp01.controller.Command;
 public class GoToIndexPage implements Command {
 
 	private static final String WEB_INF_JSP_HELLO_PAGE_JSP = "/WEB-INF/jsp/helloPage.jsp";
+	private static final String MY_CONTROLLER_COMMAND_GO_TO_INDEX_PAGE = "MyController?command=GO_TO_INDEX_PAGE";
+	private static final String URL = "url";
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		HttpSession session=request.getSession();
-		session.setAttribute("url","MyController?command=GO_TO_INDEX_PAGE");
+		session.setAttribute(URL, MY_CONTROLLER_COMMAND_GO_TO_INDEX_PAGE);
 
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(WEB_INF_JSP_HELLO_PAGE_JSP);

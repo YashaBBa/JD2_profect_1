@@ -11,11 +11,16 @@ import com.tc.webapp01.entity.Subject;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class SQLSpecialityDAO implements SpecialytiesDAO {
-    public static final String RETING = "reting";
-    public static final String PRIVILEGES = "privileges";
+    private static final String RETING = "reting";
+    private static final String PRIVILEGES = "privileges";
+    private static final String DATABASE_SERVER_CONNECTION_HAS_PROBLEM = "Database server connection has problem";
+    private static final String SQL_COMMAND_EXCEPTION = "SQL command exception";
+    private static final String SELECT_DEADLINE_DATE_FROM_APPLICATIONSSYSTEM_APPLICATION_CAMPAIGN_WHERE_APPLICATION_CAMPAIGN_ID_1 = "SELECT deadline_date FROM applicationssystem.`application campaign` where application_campaign_id=1;";
+    private static final String DEADLINE_DATE = "deadline_date";
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     private static final String SELECT_FROM_APPLICATIONSSYSTEM_SPECIALTY = "SELECT * FROM applicationssystem.specialty;";
@@ -45,7 +50,7 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
 
 
     @Override
-    public List<Speciality> specialityList(int facultyID) throws  DAOException {
+    public List<Speciality> specialityList(int facultyID) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -77,9 +82,9 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
 
             }
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL command exception", e);
+            throw new DAOException(SQL_COMMAND_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -87,7 +92,7 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
     }
 
     @Override
-    public Property propertiesList(int specialityID) throws  DAOException {
+    public Property propertiesList(int specialityID) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -117,9 +122,9 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
 
             }
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL command exception", e);
+            throw new DAOException(SQL_COMMAND_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -127,7 +132,7 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
     }
 
     @Override
-    public List<Subject> getSubjectList(int specialityID) throws  DAOException {
+    public List<Subject> getSubjectList(int specialityID) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -163,9 +168,9 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
                 }
             }
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL command exception", e);
+            throw new DAOException(SQL_COMMAND_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -200,13 +205,48 @@ public class SQLSpecialityDAO implements SpecialytiesDAO {
                 }
             }
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL command exception", e);
+            throw new DAOException(SQL_COMMAND_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement, resultSet);
         }
         return applicantList;
+    }
+
+    @Override
+    public Boolean checkDeadlineTime() throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String SQL = SELECT_DEADLINE_DATE_FROM_APPLICATIONSSYSTEM_APPLICATION_CAMPAIGN_WHERE_APPLICATION_CAMPAIGN_ID_1;
+        Boolean outOfTime = null;
+        try {
+            connection = connectionPool.takeConnection();
+            statement = connection.prepareCall(SQL);
+            statement.execute();
+            resultSet = statement.getResultSet();
+            resultSet.next();
+            Date deadlineTime = resultSet.getDate(DEADLINE_DATE);
+            GregorianCalendar calendar = (GregorianCalendar) GregorianCalendar.getInstance();
+            java.util.Date date = calendar.getTime();
+            Date nowTime = new java.sql.Date(date.getTime());
+            if (nowTime.compareTo(deadlineTime) > 0) {
+                return false;
+            } else {
+                return true;
+            }
+
+
+        } catch (ConnectionPoolException e) {
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
+        } catch (SQLException e) {
+            throw new DAOException(SQL_COMMAND_EXCEPTION, e);
+        } finally {
+            connectionPool.closeConnection(connection, statement, resultSet);
+        }
+
+
     }
 
 }

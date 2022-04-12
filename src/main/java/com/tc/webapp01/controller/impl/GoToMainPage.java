@@ -1,6 +1,7 @@
 package com.tc.webapp01.controller.impl;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -24,6 +25,8 @@ public class GoToMainPage implements Command {
     private static final String WEB_INF_JSP_MAIN_PAGE_JSP = "/WEB-INF/jsp/mainPage.jsp";
     private static final String MY_CONTROLLER_COMMAND_GO_TO_ERROR_PAGE = "MyController?command=GO_TO_ERROR_PAGE";
     private static final String MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE = "MyController?command=GO_TO_MAIN_PAGE";
+    private static final String DATE = "date";
+    private static final String URL = "url";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,10 +35,12 @@ public class GoToMainPage implements Command {
         FacultyService facultyService = serviceFactory.getFacultyService();
 
         HttpSession session=request.getSession();
-        session.setAttribute("url", MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE);
+        session.setAttribute(URL, MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE);
         try {
             List<Faculty> facultyList= facultyService.allFaculties();
+            String date= String.valueOf(facultyService.getDate());
             request.setAttribute(FACULTY_LIST,facultyList);
+            request.setAttribute(DATE,date);
         } catch (ServiceException e) {
             response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_ERROR_PAGE);
         }

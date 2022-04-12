@@ -6,7 +6,6 @@ import com.tc.webapp01.entity.Request;
 import com.tc.webapp01.entity.Speciality;
 import com.tc.webapp01.service.ServiceException;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface AdminDAO {
@@ -27,4 +26,15 @@ public interface AdminDAO {
     void savePropetriesForSpeciality(Property properties, int specialityID) throws  DAOException;
 
     void saveSpecialityAndSubjectsConnection(Integer listOfSubjects, int minScore, int specialityID) throws  DAOException;
+
+    Boolean changeDate(String date) throws DAOException;
+
+    List<Speciality> getAllSpecilitisWhithRequests() throws DAOException;
+
+    Boolean sortAllApplitantsRequestsByPriotityAndScore(List<Speciality> specialityList) throws DAOException;
+
+    void redactSpeciality(String param) throws DAOException;
+
+    void updateSpecialityParam(String specID, String score, String places, String prefPlaces, String cost) throws DAOException;
+
 }

@@ -13,8 +13,15 @@ public class Applicant implements Serializable {
     private int applicantSpeciality;
     private String privileges;
 
+    public Integer getPriority() {
+        return priority;
+    }
 
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
 
+    private Integer priority;
 
 
     public int getScore() {
@@ -34,7 +41,6 @@ public class Applicant implements Serializable {
     public void setPrivileges(String privileges) {
         this.privileges = privileges;
     }
-
 
 
     public Applicant() {

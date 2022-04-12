@@ -27,6 +27,8 @@ public class GoToRequestPage implements Command {
     private static final String APPLICANTS_LIST = "applicantsList";
     private static final String WEB_INF_JSP_REPUEST_PAGE_JSP = "/WEB-INF/jsp/repuestPage.jsp";
     private static final String EXCEPTION_REDIRECT = "MyController?command=GO_TO_ERROR_PAGE";
+    private static final String MY_CONTROLLER_COMMAND_GO_TO_REQUEST_PAGE_SPECIALITY_ID = "MyController?command=GO_TO_REQUEST_PAGE&specialityID=";
+    private static final String URL = "url";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -54,7 +56,7 @@ public class GoToRequestPage implements Command {
         HttpSession session = request.getSession();
         session.setAttribute(SPECIALITY_ID, specialityID);
 
-        session.setAttribute("url","MyController?command=GO_TO_REQUEST_PAGE&specialityID="+specialityID);
+        session.setAttribute(URL, MY_CONTROLLER_COMMAND_GO_TO_REQUEST_PAGE_SPECIALITY_ID +specialityID);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher(WEB_INF_JSP_REPUEST_PAGE_JSP);
         dispatcher.forward(request, response);

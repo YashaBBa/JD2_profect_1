@@ -14,11 +14,13 @@ import com.tc.webapp01.entity.Greeting;
 public class GoToregistrationPageCommand implements Command {
 
 	private static final String WEB_INF_JSP_REGISTRATION_JSP = "/WEB-INF/jsp/registration.jsp";
+	private static final String MY_CONTROLLER_COMMAND_GO_TO_REGISTRATION_PAGE = "MyController?command=GO_TO_REGISTRATION_PAGE";
+	private static final String URL = "url";
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session=request.getSession();
-		session.setAttribute("url","MyController?command=GO_TO_REGISTRATION_PAGE");
+		session.setAttribute(URL, MY_CONTROLLER_COMMAND_GO_TO_REGISTRATION_PAGE);
 
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(WEB_INF_JSP_REGISTRATION_JSP);

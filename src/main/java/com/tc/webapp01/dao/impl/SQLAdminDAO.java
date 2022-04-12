@@ -15,16 +15,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAdminDAO implements AdminDAO {
-    private static final String UPDATE_APPLICATIONSSYSTEM_USERS_SET_ROLES_ID_3_WHERE_USER_ID = "UPDATE applicationssystem.users SET roles_id=3 WHERE user_id=";
+    public static final String SELECT_APPLICANTS_APPLICANT_ID_SPECIALITY_ID_SCORE_PRIORITY_FROM_APPLICATIONSSYSTEM_REQUEST_WHERE_SUBJECTS_SUBJECTID_AND_LOOK_AND_SPECIALITY_ID_ORDER_BY_SCORE = "SELECT applicants_applicant_id,speciality_id,score,priority FROM applicationssystem.request WHERE subjects_subjectid=? AND look=? AND speciality_id=? ORDER BY score;";
+    private static final String UPDATE_APPLICATIONSSYSTEM_USERS_SET_ROLES_ID_3_WHERE_USER_ID = "UPDATE applicationssystem.request SET look=2 WHERE applicants_applicant_id=? AND speciality_id=?";
     private static final String UPDATE_APPLICATIONSSYSTEM_APPLICANTS_SET_SPECIALITY_ID_WHERE_APPLICANT_ID = "UPDATE applicationssystem.applicants SET speciality_id=? WHERE applicant_id=?";
     private static final String DELETE_REQUEST_COMMAND = "DELETE FROM applicationssystem.request WHERE applicants_applicant_id=";
     private static final String INSERT_INTO_APPLICATIONSSYSTEM_SCPECIALTY_PROPERTIES_HAS_SUBJECTS_SCPECIALTY_PROPERTIES_IDTABLE_1_SUBJECTS_SUBJECTID_MINIMUM_POSSITIVE_SCORE_VALUES = "INSERT INTO applicationssystem.scpecialty_properties_has_subjects(scpecialty_properties_idtable1,subjects_subjectid,minimum_possitive_score) VALUES(?,?,?)";
     private static final String INSERT_INTO_APPLICATIONSSYSTEM_SCPECIALTY_PROPERTIES_PREFERENTIAL_PLACES_PLACES_COST_SPECIALTY_ID_VALUES = "INSERT INTO applicationssystem.scpecialty_properties(preferential_places,places,cost,specialty_id) VALUES(?,?,?,?)";
     private static final String INSERT_INTO_APPLICATIONSSYSTEM_SPECIALTY_SPECIALTY_MINIMUM_SCORE_FACULTIES_IDFACULTIES_VALUES = "INSERT INTO applicationssystem.specialty(specialty,minimum_score,faculties_idfaculties) VALUES(?,?,?)";
     private static final String DELETE_FROM_APPLICATIONSSYSTEM_REQUEST_WHERE_APPLICANTS_APPLICANT_ID_AND_SPECIALITY_ID = "DELETE FROM applicationssystem.request WHERE applicants_applicant_id=? AND speciality_id=?";
+    private static final int COUNT_OF_REQUESTS = 5;
+    private static final int COUNT_OF_STEPS = 2;
+    private static final String DATABASE_SERVER_CONNECTION_HAS_PROBLEM = "Database server connection has problem";
+    private static final String SQL_EXCEPTION = "SQL Exception";
+    private static final String UPDATE_APPLICATIONSSYSTEM_SPECIALTY_SET_MINIMUM_SCORE_WHERE_IDSPECIALTY = "UPDATE applicationssystem.specialty SET minimum_score=? WHERE idspecialty=?";
+    private static final String UPDATE_APPLICATIONSSYSTEM_SCPECIALTY_PROPERTIES_SET_PREFERENTIAL_PLACES_COST_PLACES_WHERE_SPECIALTY_ID = "UPDATE applicationssystem.scpecialty_properties SET preferential_places=?, cost=?,places=?  WHERE specialty_id=?";
+    private static final String DELETE_FROM_APPLICATIONSSYSTEM_SPECIALTY_WHERE_IDSPECIALTY = "DELETE FROM applicationssystem.specialty WHERE idspecialty=? ";
+    private static final String PRIORITY = "priority";
+    private static final String SPECIALTY_ID = "specialty_id";
+    private static final String PLACES = "places";
+    private static final String UPDATE_APPLICATIONSSYSTEM_APPLICATION_CAMPAIGN_SET_DEADLINE_DATE_WHERE_APPLICATION_CAMPAIGN_ID = "UPDATE applicationssystem.`application campaign` SET deadline_date=? WHERE application_campaign_id=?";
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
-    private static final String SELECT_FROM_APPLICATIONSSYSTEM_REQUEST = "SELECT * FROM applicationssystem.request;";
+    private static final String SELECT_FROM_APPLICATIONSSYSTEM_REQUEST = "SELECT * FROM applicationssystem.request WHERE look=1;";
     private static final String SELECT_FROM_APPLICATIONSSYSTEM_APPLICANTS = "SELECT * FROM applicationssystem.applicants;";
     private static final String SELECT_FROM_APPLICATIONSSYSTEM_SPECIALTY = "SELECT * FROM applicationssystem.specialty;";
     private static final String SELECT_FROM_APPLICATIONSSYSTEM_SPECIALTY1 = "SELECT * FROM applicationssystem.specialty;";
@@ -78,10 +90,9 @@ public class SQLAdminDAO implements AdminDAO {
 
             }
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
-
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL Exception", e);
+            throw new DAOException(SQL_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -94,7 +105,7 @@ public class SQLAdminDAO implements AdminDAO {
         return null;
     }
 
-    public Applicant getApplicantData(int applicantID) throws  DAOException {
+    public Applicant getApplicantData(int applicantID) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -117,9 +128,9 @@ public class SQLAdminDAO implements AdminDAO {
                 }
             }
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL Exception", e);
+            throw new DAOException(SQL_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -131,7 +142,7 @@ public class SQLAdminDAO implements AdminDAO {
 
 
     @Override
-    public String getSpecialityName(int specID) throws  DAOException {
+    public String getSpecialityName(int specID) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -151,9 +162,9 @@ public class SQLAdminDAO implements AdminDAO {
                 }
             }
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL Exception", e);
+            throw new DAOException(SQL_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -164,34 +175,56 @@ public class SQLAdminDAO implements AdminDAO {
 
 
     @Override
-    public Boolean applyRequest(int specID, int applicantID) throws DAOException{
+    public Boolean applyRequest(int specID, int applicantID) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
 
-        String SQL = UPDATE_APPLICATIONSSYSTEM_USERS_SET_ROLES_ID_3_WHERE_USER_ID + applicantID;
+        String SQL = UPDATE_APPLICATIONSSYSTEM_USERS_SET_ROLES_ID_3_WHERE_USER_ID;
 
         try {
             connection = connectionPool.takeConnection();
             statement = connection.prepareCall(SQL);
+            statement.setInt(1, applicantID);
+            statement.setInt(2, specID);
             statement.execute();
             System.out.println(specID);
 
-            //SQL = "UPDATE applicationssystem.applicants SET speciality_id=" + specID + " WHERE applicant_id=" + applicantID + ";";
-            SQL = UPDATE_APPLICATIONSSYSTEM_APPLICANTS_SET_SPECIALITY_ID_WHERE_APPLICANT_ID;
+
+        } catch (ConnectionPoolException e) {
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
+        } catch (SQLException e) {
+            throw new DAOException(SQL_EXCEPTION, e);
+        } finally {
+            connectionPool.closeConnection(connection, statement);
+        }
+
+        return null;
+    }
+
+    public Boolean addApplicnatInGreenList(int specID, int applicantID) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+
+        try {
+            connection = connectionPool.takeConnection();
+
+
+            String SQL = UPDATE_APPLICATIONSSYSTEM_APPLICANTS_SET_SPECIALITY_ID_WHERE_APPLICANT_ID;
 
             statement = connection.prepareStatement(SQL);
             statement.setInt(1, specID);
             statement.setInt(2, applicantID);
             statement.execute();
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL Exception", e);
+            throw new DAOException(SQL_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement);
         }
 
-        return null;
+        return true;
     }
 
 
@@ -205,9 +238,9 @@ public class SQLAdminDAO implements AdminDAO {
             statement = connection.prepareCall(SQL);
             statement.execute();
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL Exception", e);
+            throw new DAOException(SQL_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement);
         }
@@ -218,14 +251,14 @@ public class SQLAdminDAO implements AdminDAO {
 
 
     @Override
-    public Boolean deleteRequest(int applicantID, int specialityID) throws  DAOException {
+    public Boolean deleteRequest(int applicantID, int specialityID) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
 
 
         try {
             connection = connectionPool.takeConnection();
-            //String SQL = "DELETE FROM applicationssystem.request WHERE applicants_applicant_id=" + applicantID + " AND speciality_id=" + specialityID + ";";
+
             String SQL = DELETE_FROM_APPLICATIONSSYSTEM_REQUEST_WHERE_APPLICANTS_APPLICANT_ID_AND_SPECIALITY_ID;
 
             statement = connection.prepareStatement(SQL);
@@ -233,9 +266,9 @@ public class SQLAdminDAO implements AdminDAO {
             statement.setInt(2, specialityID);
             statement.execute();
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL Exception", e);
+            throw new DAOException(SQL_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement);
         }
@@ -246,7 +279,7 @@ public class SQLAdminDAO implements AdminDAO {
 
 
     @Override
-    public int saveAndGetNewSpecialityID(Speciality speciality) throws DAOException{
+    public int saveAndGetNewSpecialityID(Speciality speciality) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -274,9 +307,9 @@ public class SQLAdminDAO implements AdminDAO {
                 }
             }
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL Exception", e);
+            throw new DAOException(SQL_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -302,9 +335,9 @@ public class SQLAdminDAO implements AdminDAO {
             statement.setInt(4, specialityID);
             statement.execute();
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL Exception", e);
+            throw new DAOException(SQL_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement);
         }
@@ -313,7 +346,7 @@ public class SQLAdminDAO implements AdminDAO {
 
 
     @Override
-    public void saveSpecialityAndSubjectsConnection(Integer listOfSubjects, int minScore, int specialityID) throws  DAOException {
+    public void saveSpecialityAndSubjectsConnection(Integer listOfSubjects, int minScore, int specialityID) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
 
@@ -323,19 +356,100 @@ public class SQLAdminDAO implements AdminDAO {
         try {
             connection = connectionPool.takeConnection();
             statement = connection.prepareStatement(SQL);
-            statement.setInt(1,specialityID);
-            statement.setInt(2,listOfSubjects);
-            statement.setInt(3,minScore);
+            statement.setInt(1, specialityID);
+            statement.setInt(2, listOfSubjects);
+            statement.setInt(3, minScore);
             statement.execute();
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL Exception", e);
+            throw new DAOException(SQL_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement);
         }
 
     }
+
+    @Override
+    public Boolean changeDate(String date) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        String SQL = UPDATE_APPLICATIONSSYSTEM_APPLICATION_CAMPAIGN_SET_DEADLINE_DATE_WHERE_APPLICATION_CAMPAIGN_ID;
+        try {
+            connection = connectionPool.takeConnection();
+            statement = connection.prepareStatement(SQL);
+            statement.setDate(1, Date.valueOf(date));
+            statement.setInt(2, 1);
+
+
+            return statement.execute();
+
+        } catch (ConnectionPoolException e) {
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
+        } catch (SQLException e) {
+            throw new DAOException(SQL_EXCEPTION, e);
+        } finally {
+            connectionPool.closeConnection(connection, statement);
+        }
+
+    }
+
+    @Override
+    public List<Speciality> getAllSpecilitisWhithRequests() throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Speciality> specialityList = new ArrayList<>();
+
+        String SQL = "SELECT specialty_id,places FROM applicationssystem.scpecialty_properties;";
+        try {
+            connection = connectionPool.takeConnection();
+            statement = connection.prepareCall(SQL);
+            statement.execute();
+            resultSet = statement.getResultSet();
+            while (resultSet.next()) {
+                {
+                    Speciality speciality = new Speciality();
+                    speciality.setId(resultSet.getInt(SPECIALTY_ID));
+                    speciality.setPlaces(resultSet.getInt(PLACES));
+                    specialityList.add(speciality);
+                }
+            }
+            SQL = SELECT_APPLICANTS_APPLICANT_ID_SPECIALITY_ID_SCORE_PRIORITY_FROM_APPLICATIONSSYSTEM_REQUEST_WHERE_SUBJECTS_SUBJECTID_AND_LOOK_AND_SPECIALITY_ID_ORDER_BY_SCORE;
+            statement = connection.prepareStatement(SQL);
+
+            for (Speciality speciality : specialityList) {
+
+
+                statement.setInt(1, 6);
+                statement.setInt(2, 2);
+                statement.setInt(3, speciality.getId());
+                statement.execute();
+                resultSet = statement.getResultSet();
+                List<Applicant> listOfApplicatns = new ArrayList<>();
+                while (resultSet.next()) {
+                    {
+                        Applicant applicant = new Applicant();
+                        applicant.setScore(resultSet.getInt(SCORE));
+                        applicant.setApplicantId(resultSet.getInt(APPLICANTS_APPLICANT_ID));
+                        applicant.setPriority(resultSet.getInt(PRIORITY));
+                        listOfApplicatns.add(applicant);
+                    }
+                }
+                speciality.setListOfApplicants(listOfApplicatns);
+
+            }
+        } catch (ConnectionPoolException e) {
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
+        } catch (SQLException e) {
+            throw new DAOException(SQL_EXCEPTION, e);
+        } finally {
+            connectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return specialityList;
+    }
+
 
     public String getSubjectName(int specID) throws DAOException {
         Connection connection = null;
@@ -358,13 +472,112 @@ public class SQLAdminDAO implements AdminDAO {
                 }
             }
         } catch (ConnectionPoolException e) {
-            throw new DAOException("Database server connection has problem", e);
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
         } catch (SQLException e) {
-            throw new DAOException("SQL Exception", e);
+            throw new DAOException(SQL_EXCEPTION, e);
         } finally {
             connectionPool.closeConnection(connection, statement, resultSet);
         }
         return null;
+    }
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+    @Override
+    public Boolean sortAllApplitantsRequestsByPriotityAndScore(List<Speciality> specialityList) throws DAOException {
+
+        List<Applicant> applicantList = new ArrayList<>();
+        Boolean apply = false;
+
+
+        for (int i = 0; i < COUNT_OF_REQUESTS; i++) {
+            for (int j = 0; j < COUNT_OF_STEPS; j++) {
+                for (Speciality speciality : specialityList) {
+
+                    for (Applicant listOfApplicant : speciality.getListOfApplicants()) {
+                        int applicantRatingPlace = speciality.getListOfApplicants().indexOf(listOfApplicant);
+
+                        if (applicantRatingPlace < speciality.getPlaces() && listOfApplicant.getPriority() == i) {
+                            apply = addApplicnatInGreenList(speciality.getId(), listOfApplicant.getApplicantId());
+                            speciality.setPlaces(speciality.getPlaces() - 1);
+                            System.out.println(listOfApplicant.getApplicantId() + " " + listOfApplicant.getScore() + " Apply this dude");
+                            applicantList.add(listOfApplicant);
+
+
+                        }
+                    }
+                    if (apply) {
+                        for (Applicant applicant : applicantList) {
+                            speciality.getListOfApplicants().remove(applicant);
+                        }
+                        apply = false;
+                    }
+
+                }
+
+
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public void redactSpeciality(String param) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        String SQL = DELETE_FROM_APPLICATIONSSYSTEM_SPECIALTY_WHERE_IDSPECIALTY;
+
+
+        try {
+            connection = connectionPool.takeConnection();
+            statement = connection.prepareCall(SQL);
+            statement.setInt(1, Integer.parseInt(param));
+            statement.execute();
+
+
+        } catch (ConnectionPoolException e) {
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
+        } catch (SQLException e) {
+            throw new DAOException(SQL_EXCEPTION, e);
+        } finally {
+            connectionPool.closeConnection(connection, statement);
+        }
+
+    }
+
+    @Override
+    public void updateSpecialityParam(String specID, String score, String places, String prefPlaces, String cost) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        String SQL = UPDATE_APPLICATIONSSYSTEM_SCPECIALTY_PROPERTIES_SET_PREFERENTIAL_PLACES_COST_PLACES_WHERE_SPECIALTY_ID;
+
+
+        try {
+            connection = connectionPool.takeConnection();
+            statement = connection.prepareCall(SQL);
+
+            statement.setInt(1, Integer.parseInt(places));
+            statement.setDouble(2, Double.parseDouble(cost));
+            statement.setInt(3, Integer.parseInt(places));
+            statement.setInt(4, Integer.parseInt(specID));
+            statement.execute();
+            SQL = UPDATE_APPLICATIONSSYSTEM_SPECIALTY_SET_MINIMUM_SCORE_WHERE_IDSPECIALTY;
+            statement = connection.prepareStatement(SQL);
+            statement.setInt(1, Integer.parseInt(score));
+            statement.setInt(2, Integer.parseInt(specID));
+            statement.execute();
+
+
+        } catch (ConnectionPoolException e) {
+            throw new DAOException(DATABASE_SERVER_CONNECTION_HAS_PROBLEM, e);
+        } catch (SQLException e) {
+            throw new DAOException(SQL_EXCEPTION, e);
+        } finally {
+            connectionPool.closeConnection(connection, statement);
+        }
+
     }
 
 }

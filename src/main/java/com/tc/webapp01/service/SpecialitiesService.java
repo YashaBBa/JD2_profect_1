@@ -15,4 +15,7 @@ public interface SpecialitiesService {
     List<Subject> getSubjectsList(int specialityID) throws  ServiceException;
 
     List<Applicant> getApplicantsList(int specialityID) throws ServiceException;
+
+    Boolean checkDeadLineTime() throws ServiceException;
+
 }

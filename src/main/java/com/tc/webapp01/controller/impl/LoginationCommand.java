@@ -22,10 +22,11 @@ public class LoginationCommand implements Command {
     private static final String MY_CONTROLLER_COMMAND_GO_TO_MAIN_PAGE = "MyController?command=GO_TO_MAIN_PAGE&";
     private static final String EXCEPTION_REDIRECT = "MyController?command=GO_TO_ERROR_PAGE";
     private static final String MY_CONTROLLER_COMMAND_GO_TO_INDEX_PAGE = "MyController?command=GO_TO_INDEX_PAGE";
+    private static final String CHECK_UR_PASSWORD_OR_EMAIL = "Check ur password or email";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("logination");
+
 
 
         String login;
@@ -55,7 +56,7 @@ public class LoginationCommand implements Command {
                         "loginationInfo=" + "SSS");
 
             } else {
-                System.out.println("Check ur password or email");
+                System.out.println(CHECK_UR_PASSWORD_OR_EMAIL);
                 response.sendRedirect(MY_CONTROLLER_COMMAND_GO_TO_INDEX_PAGE);
 
             }

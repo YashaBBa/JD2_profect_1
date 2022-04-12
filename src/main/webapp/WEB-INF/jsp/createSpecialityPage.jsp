@@ -24,6 +24,7 @@
 
 </head>
 <body>
+<c:out value="${requestScope.facultyID}"/>
 <form action="MyController" method="post">
     <input type="hidden" name="command" value="saveNewSpeciality">
     ${speciality}
@@ -49,7 +50,7 @@
     <input type="number" name="thirdSub" value=""/>
     <br/>
     <input type="hidden" name="facultyID" value="${requestScope.facultyID}">
-    <c:set var="facultyID"  scope="request" value="${requestScope.facultyID}"/>
+
     <input type="submit" value="Create"/>
 </form>
 <br/>

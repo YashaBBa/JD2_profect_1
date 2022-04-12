@@ -15,4 +15,7 @@ public interface SpecialytiesDAO {
     List<Subject> getSubjectList(int specialityID) throws  DAOException;
 
     List<Applicant> getApplicantList(int specialityID) throws  DAOException;
+
+    Boolean checkDeadlineTime() throws DAOException;
+
 }

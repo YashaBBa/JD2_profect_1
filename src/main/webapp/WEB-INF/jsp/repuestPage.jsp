@@ -70,6 +70,7 @@
     </c:forEach>
 
 </c:if>
+<br/>
 <a href="MyController?command=exit">Exit</a>
 <c:set var="sorts"  scope="request" value="${requestScope.applicantsList}"/>
 <br/>
